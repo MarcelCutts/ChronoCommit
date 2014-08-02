@@ -54,18 +54,25 @@ class GithubLocationDB(object):
         self.connection.execute("CREATE TABLE locations (location text, country text)")
         self.connection.execute("CREATE TABLE hourly_commite (country text, day int, hour int, commits int)")
 
+    def process_commits(self):
+        """
+        Performs processing on the data to cache results
+        needed for the visualisation.
+        """
+        pass
+
     def _dict_to_sql_insert(self, commit_dict):
         """Converts a dict into an SQL statement for commits."""
         return "(\"%s\", \"%s\")" % (self._escape_quotes(commit_dict['location']), commit_dict['time'])
+
+    def _save(self):
+        """Saves changes."""
+        self.connection.commit()
 
     @staticmethod
     def _escape_quotes(quoted_str):
         """Doubles double quotes if found in the string."""
         return "".join(["\"\"" if c == "\"" else c for c in quoted_str])
-
-    def _save(self):
-        """Saves changes."""
-        self.connection.commit()
 
     @staticmethod
     def _chunk(list_to_chunk, chunk_size):

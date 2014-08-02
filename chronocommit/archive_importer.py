@@ -73,19 +73,3 @@ class JsonArchiveImporter(object):
     def _is_commit(event_dict):
         """Returns True if the given dict is a commit event."""
         return event_dict['type'] == 'PushEvent'
-
-def run_command_line():
-    """Performs command line argument parsing"""
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser(description='Pulls filtered GitHub data into SQLite.')
-    parser.add_argument('json_directory')
-    parser.add_argument('db_filename')
-    args = parser.parse_args()
-
-    db = GithubLocationDB.create(args.db_filename)
-    loader = JsonArchiveImporter(db)
-    loader.import_directory(args.json_directory)
-
-if __name__ == '__main__':
-    run_command_line()
