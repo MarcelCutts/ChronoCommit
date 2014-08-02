@@ -32,22 +32,7 @@ class GithubLocationDB(object):
 
     def add_many(self, records):
         """Adds a collection of records to the DB."""
-        query = "INSERT INTO 'commits' ('location', 'time') VALUES "
-        values = [self._dict_to_sql_insert(d) for d in records]
-
-        # There is an upper limit on the number of records that can be
-        # inserted (500). As a result, we break the query into chunks.
-        chunked_values = list(self._chunk(values, 500))
-        chunked_values = [",".join(l) for l in chunked_values]
-        chunked_queries = [query + values for values in chunked_values]
-
-        try:
-            for chunked_query in chunked_queries:
-                self.connection.execute(chunked_query)
-        except sqlite3.OperationalError as exception:
-            print("Query threw exception:\n\t%s\nQuery:\n\t%s" % (exception.message, chunked_query))
-
-        self._save()
+        self._insert_into('commits', records)
 
     def create_schema(self):
         self.connection.execute("CREATE TABLE commits (location text, time integer)")
@@ -59,13 +44,25 @@ class GithubLocationDB(object):
         Performs processing on the data to cache results
         needed for the visualisation.
         """
+        # Wipe out anything that's already there
+        self.connection.execute("DELETE FROM locations WHERE 1")
+
         # Convert locations to countries
         locations = [row[0] for row in self.connection.execute("SELECT DISTINCT location FROM commits")]
         # TODO: Make the magic happen
         countries = [{'location': loc, 'country': ''} for loc in locations]
 
+        self._insert_into('locations', countries)
+
     def _insert_into(self, table_name, values_dict):
-        """Inserts the given iterable of dicts into the table."""
+        """
+        Inserts the given iterable of dicts into the table.
+
+        This function chunks the values up if necessary to fit within
+        the 500-row limit of SQLite on INSERTs.
+
+        The first dict is used to determine the keys used in the INSERT.
+        """
 
         # Guard against more than 500 values by recursion
         if len(values_dict) > 500:
@@ -74,7 +71,7 @@ class GithubLocationDB(object):
                 self._insert_into(table_name, chunk)
         else:
             query = "INSERT INTO " + table_name
-            column_names = values_dict.keys()
+            column_names = values_dict[0].keys()
             query += " (" + ",".join(column_names) + ") VALUES "
 
             value_strings = []
