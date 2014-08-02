@@ -15,6 +15,7 @@ Run this script if:
 
 from argparse import ArgumentParser
 import json
+from os.path import join
 
 from chronocommit.db import GithubLocationDB
 from chronocommit.archive_importer import JsonArchiveImporter
@@ -40,7 +41,7 @@ if 'process' in args.commands:
 
 # Output the results required for visualisation to a JSON file.
 if 'json' in args.commands:
-    print "Exporting JSON to hourly_commits.json"
+    print "Exporting JSON to app/assets/hourly_commits.json"
     hourly_commits = db.export_table('hourly_commits')
-    with open('hourly_commits.json', 'w') as json_file:
+    with open(join('app', 'assets', 'hourly_commits.json'), 'w') as json_file:
         json.dump(hourly_commits, json_file)
