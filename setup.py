@@ -45,3 +45,5 @@ if 'json' in args.commands:
     hourly_commits = db.export_table('hourly_commits')
     with open(join('app', 'assets', 'hourly_commits.json'), 'w') as json_file:
         json.dump(hourly_commits, json_file)
+
+db.close()

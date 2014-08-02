@@ -41,6 +41,10 @@ class GithubLocationDB(object):
         self.connection = sqlite3.connect(filename)
         self.connection.row_factory = self.dict_factory
 
+    def close(self):
+        self._save()
+        self.connection.close()
+
     def add_many(self, records):
         """Adds a collection of records to the DB."""
         self._insert_into('commits', records)
@@ -111,7 +115,6 @@ class GithubLocationDB(object):
 
             try:
                 self.connection.execute(query)
-                self._save()
             except sqlite3.OperationalError as exception:
                 print "Query threw exception:\n\t%s\nQuery:\n\t%s" % (exception.message, query)
 
