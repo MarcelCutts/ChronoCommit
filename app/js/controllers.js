@@ -8,7 +8,7 @@
 
 			}
 		])
-		.controller('MyCtrl2', ['$scope',
+		.controller('dataMapsCtrl', ['$scope',
 			function($scope) {
 
 			}
