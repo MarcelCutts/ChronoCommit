@@ -5,6 +5,7 @@ Database interface for the ChronoCommit project.
 import sqlite3
 from os.path import isfile
 from os import remove
+import country_finder
 
 class GithubLocationDB(object):
     """Provides information on the locations of commits."""
@@ -54,8 +55,7 @@ class GithubLocationDB(object):
 
         # Convert locations to countries
         locations = [row[0] for row in self.connection.execute("SELECT DISTINCT location FROM commits")]
-        # TODO: Make the magic happen
-        countries = [{'location': loc, 'country': ''} for loc in locations]
+        countries = [{'location': loc, 'country': country_finder.get_country_code(loc)} for loc in locations]
 
         self._insert_into('locations', countries)
 
