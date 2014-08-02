@@ -4,6 +4,14 @@
 
 	/* Directives */
 
+	/**
+	 * This directive exists to hold the large world map
+	 * visualisation. This creates its own containing div
+	 * and fills itself using the DataMap library.
+	 *
+	 * Additionally some scope watching occurs, and a
+	 * redraw happens if the data service changes.
+	 */
 	angular.module('chronoCommit.directives', [])
 		.directive('worldMap', function() {
 
@@ -24,10 +32,111 @@
 					data: scope.countries
 				});
 
+				/**
+				 * Watch the countries value (data bound to
+				 * the controller) and if it does, update the
+				 * map drawing.
+				 * @param  {} newValue - Value the object changed to
+				 * @param  {} oldValue - Value the object changed from
+				 */
+				scope.$watch('countries', function(newValue, oldValue) {
+					if (newValue)
+						testMap.updateChoropleth(newValue);
+				}, true);
 			}
 
 			return {
 				restrict: ' E ',
+				scope: {
+					countries: ' = '
+				},
+				link: link
+			};
+
+		})
+		.directive('colourSlider', function() {
+
+			function link(scope, element, attrs) {
+				var margin = {
+						top: 50,
+						right: 50,
+						bottom: 50,
+						left: 50
+					},
+					width = window.innerWidth - margin.left - margin.right,
+					height = 200 - margin.bottom - margin.top;
+
+				var x = d3.scale.linear()
+					.domain([0, 180])
+					.range([0, width])
+					.clamp(true);
+
+				var brush = d3.svg.brush()
+					.x(x)
+					.extent([0, 0])
+					.on("brush", brushed);
+
+				var svg = d3.select(element[0]).append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				svg.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height / 2 + ")")
+					.call(d3.svg.axis()
+						.scale(x)
+						.orient("bottom")
+						.tickFormat(function(d) {
+							return 'Kadi' + "°";
+						})
+						.tickSize(0)
+						.tickPadding(12))
+					.select(".domain")
+					.select(function() {
+						return this.parentNode.appendChild(this.cloneNode(true));
+					})
+					.attr("class", "halo");
+
+				var slider = svg.append("g")
+					.attr("class", "slider")
+					.call(brush);
+
+				slider.selectAll(".extent,.resize")
+					.remove();
+
+				slider.select(".background")
+					.attr("height", height);
+
+				var handle = slider.append("circle")
+					.attr("class", "handle")
+					.attr("transform", "translate(0," + height / 2 + ")")
+					.attr("r", 9);
+
+				slider
+					.call(brush.event)
+					.transition() // gratuitous intro!
+				.duration(750)
+					.call(brush.extent([70, 70]))
+					.call(brush.event);
+
+				function brushed() {
+					var value = brush.extent()[0];
+
+					if (d3.event.sourceEvent) { // not a programmatic event
+						value = x.invert(d3.mouse(this)[0]);
+						console.log("shits happening" + value);
+						brush.extent([value, value]);
+					}
+
+					handle.attr("cx", x(value));
+					d3.select(element[0]).style("background-color", d3.hsl(value, .8, .8));
+				}
+			}
+
+			return {
+				restrict: ' A ',
 				scope: {
 					countries: ' = '
 				},

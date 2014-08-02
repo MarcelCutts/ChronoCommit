@@ -20,7 +20,12 @@
 <body>
 
   <div ng-controller="dataMapsCtrl">
-    <world-map countries="countries"></world-map>
+    <world-map countries="countriesData"></world-map>
+    <button ng-click="colourGbr()">Such colour</button>
+  </div>
+
+  <div class="happy-container">
+    <div colour-slider></div>
   </div>
 
   <!--[if lt IE 7]>

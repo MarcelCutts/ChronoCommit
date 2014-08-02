@@ -3,10 +3,36 @@
 	'use strict';
 
 	/* Services */
+	angular.module('chronoCommit.services', [])
+		.service('countryDataService', function() {
+			this.countriesData = {
+				USA: {
+					fillKey: "authorHasTraveledTo"
+				},
+				JPN: {
+					fillKey: "authorHasTraveledTo"
+				},
+				ITA: {
+					fillKey: "authorHasTraveledTo"
+				},
+				CRI: {
+					fillKey: "authorHasTraveledTo"
+				},
+				KOR: {
+					fillKey: "authorHasTraveledTo"
+				},
+				DEU: {
+					fillKey: "authorHasTraveledTo"
+				},
+				EST: {
+					fillKey: "estonia"
+				}
+			};
 
-
-	// Demonstrate how to register services
-	// In this case it is a simple value service.
-	angular.module('chronoCommit.services', []).
-	value('version', '0.1');
+			this.updateCountries = function() {
+				this.countriesData.GBR = {
+					fillKey: "estonia"
+				};
+			};
+		});
 })();
