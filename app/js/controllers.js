@@ -15,7 +15,12 @@
 		])
 		.controller('sliderCtrl', ['$scope', 'countryDataService',
 			function($scope, countryDataService) {
-				$scope.slideValue = 0;
+				$scope.timeAxisPosition = 7;
+
+				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
+					if (newValue)
+						console.log('clipclop' + newValue);
+				}, true);
 			}
 		]);
 })();
