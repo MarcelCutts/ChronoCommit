@@ -52,18 +52,43 @@ class GithubLocationDB(object):
     def create_schema(self):
         self.connection.execute("CREATE TABLE commits (location text, time integer)")
         self.connection.execute("CREATE TABLE locations (location text, country text)")
-        self.connection.execute("CREATE TABLE hourly_commite (country text, day int, hour int, commits int)")
+        self.connection.execute("CREATE TABLE hourly_commits (country text, day int, hour int, commits int)")
 
     def process_commits(self):
         """
         Performs processing on the data to cache results
         needed for the visualisation.
         """
-        pass
+        # Convert locations to countries
+        locations = [row[0] for row in self.connection.execute("SELECT DISTINCT location FROM commits")]
+        # TODO: Make the magic happen
+        countries = [{'location': loc, 'country': ''} for loc in locations]
 
-    def _dict_to_sql_insert(self, commit_dict):
-        """Converts a dict into an SQL statement for commits."""
-        return "(\"%s\", \"%s\")" % (self._escape_quotes(commit_dict['location']), commit_dict['time'])
+    def _insert_into(self, table_name, values_dict):
+        """Inserts the given iterable of dicts into the table."""
+
+        # Guard against more than 500 values by recursion
+        if len(values_dict) > 500:
+            chunked_values = list(self._chunk(values_dict, 500))
+            for chunk in chunked_values:
+                self._insert_into(table_name, chunk)
+        else:
+            query = "INSERT INTO " + table_name
+            column_names = values_dict.keys()
+            query += " (" + ",".join(column_names) + ") VALUES "
+
+            value_strings = []
+            for datum in values_dict:
+                value_list = [self._escape_quotes(datum[column_name]) for column_name in column_names]
+                value_strings.append("(\"" + "\",\"".join(value_list) + "\")")
+            query += ",".join(value_strings)
+
+            try:
+                self.connection.execute(query)
+                self._save()
+            except sqlite3.OperationalError as exception:
+                print "Query threw exception:\n\t%s\nQuery:\n\t%s" % (exception.message, query)
+
 
     def _save(self):
         """Saves changes."""
