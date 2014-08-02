@@ -5,10 +5,10 @@ Given a user-entered location, will return the area code of the country the user
 '''
 def get_country_code(location):
 
-    countriesFile = 'resources/countries.json'
-    capitalsFile = 'resources/capitals.json'
-    usStatesFile = 'resources/us_states.txt'
-    usStatesAbbreviationsFile = 'resources/us_states_abbreviations.txt'
+    countriesFile = 'chronocommit/resources/countries.json'
+    capitalsFile = 'chronocommit/resources/capitals.json'
+    usStatesFile = 'chronocommit/resources/us_states.txt'
+    usStatesAbbreviationsFile = 'chronocommit/resources/us_states_abbreviations.txt'
 
     # try/catch is to catch any exceptions raised due to unconventional characters
     try:
@@ -58,6 +58,7 @@ def get_country_code(location):
 
         return country_code
 
-    except:
+    except BaseException as e:
+        print(e)
         country_code = ''
         return country_code
