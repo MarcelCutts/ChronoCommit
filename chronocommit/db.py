@@ -44,6 +44,11 @@ class GithubLocationDB(object):
         Performs processing on the data to cache results
         needed for the visualisation.
         """
+        self._refresh_countries()
+        self._refresh_hourly_commits()
+
+    def _refresh_countries(self):
+        """Populates the locations table"""
         # Wipe out anything that's already there
         self.connection.execute("DELETE FROM locations WHERE 1")
 
@@ -53,6 +58,17 @@ class GithubLocationDB(object):
         countries = [{'location': loc, 'country': ''} for loc in locations]
 
         self._insert_into('locations', countries)
+
+    def _refresh_hourly_commits(self):
+        self.connection.execute("DELETE FROM hourly_commits WHERE 1")
+        self.connection.execute("""
+        INSERT INTO hourly_commits (country, day, hour, commits)
+        SELECT country, strftime('%w', time) as day, strftime('%H', time) as hour, COUNT(*) AS commits
+        FROM commits c
+        INNER JOIN locations l on c.location = l.location
+        GROUP BY country, day, hour
+        ORDER BY commits desc
+        """)
 
     def _insert_into(self, table_name, values_dict):
         """
