@@ -14,12 +14,14 @@ Run this script if:
 """
 
 from argparse import ArgumentParser
+import json
+from os.path import join
 
 from chronocommit.db import GithubLocationDB
 from chronocommit.archive_importer import JsonArchiveImporter
 
 parser = ArgumentParser(description='Performs setup tasks for ChronoCommit')
-parser.add_argument('commands', nargs='*', default=['import', 'process'], help='Any of: import process')
+parser.add_argument('commands', nargs='*', default=['import', 'process', 'json'], help='Any of: import process json')
 args = parser.parse_args()
 
 # Setup the database and add the data
@@ -36,3 +38,12 @@ else:
 if 'process' in args.commands:
     print "Caching calculations for visualisation"
     db.process_commits()
+
+# Output the results required for visualisation to a JSON file.
+if 'json' in args.commands:
+    print "Exporting JSON to app/assets/hourly_commits.json"
+    hourly_commits = db.export_table('hourly_commits')
+    with open(join('app', 'assets', 'hourly_commits.json'), 'w') as json_file:
+        json.dump(hourly_commits, json_file)
+
+db.close()

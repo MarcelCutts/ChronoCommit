@@ -6,6 +6,8 @@ import sqlite3
 from os.path import isfile
 from os import remove
 
+from chronocommit import country_finder
+
 class GithubLocationDB(object):
     """Provides information on the locations of commits."""
 
@@ -26,9 +28,22 @@ class GithubLocationDB(object):
         db.create_schema()
         return db
 
+    @staticmethod
+    def dict_factory(cursor, row):
+        """Used by sqlite3 to generate dicts instead of lists."""
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
+
     def __init__(self, filename):
         """Opens the database at the given filename."""
         self.connection = sqlite3.connect(filename)
+        self.connection.row_factory = self.dict_factory
+
+    def close(self):
+        self._save()
+        self.connection.close()
 
     def add_many(self, records):
         """Adds a collection of records to the DB."""
@@ -44,15 +59,33 @@ class GithubLocationDB(object):
         Performs processing on the data to cache results
         needed for the visualisation.
         """
+        self._refresh_countries()
+        self._refresh_hourly_commits()
+
+    def export_table(self, table_name):
+        """Exports all rows from the given table"""
+        return self.connection.execute("SELECT * FROM " + table_name + " WHERE country <> ''").fetchall()
+
+    def _refresh_countries(self):
+        """Populates the locations table"""
         # Wipe out anything that's already there
         self.connection.execute("DELETE FROM locations WHERE 1")
 
         # Convert locations to countries
-        locations = [row[0] for row in self.connection.execute("SELECT DISTINCT location FROM commits")]
-        # TODO: Make the magic happen
-        countries = [{'location': loc, 'country': ''} for loc in locations]
-
+        locations = [row['location'] for row in self.connection.execute("SELECT DISTINCT location FROM commits")]
+        countries = [{'location': loc, 'country': country_finder.get_country_code(loc)} for loc in locations]
         self._insert_into('locations', countries)
+
+    def _refresh_hourly_commits(self):
+        self.connection.execute("DELETE FROM hourly_commits WHERE 1")
+        self.connection.execute("""
+        INSERT INTO hourly_commits (country, day, hour, commits)
+        SELECT country, strftime('%w', time) as day, strftime('%H', time) as hour, COUNT(*) AS commits
+        FROM commits c
+        INNER JOIN locations l on c.location = l.location
+        GROUP BY country, day, hour
+        ORDER BY commits desc
+        """)
 
     def _insert_into(self, table_name, values_dict):
         """
@@ -82,7 +115,6 @@ class GithubLocationDB(object):
 
             try:
                 self.connection.execute(query)
-                self._save()
             except sqlite3.OperationalError as exception:
                 print "Query threw exception:\n\t%s\nQuery:\n\t%s" % (exception.message, query)
 
