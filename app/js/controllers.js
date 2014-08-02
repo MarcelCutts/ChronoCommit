@@ -3,19 +3,19 @@
 	/* Controllers */
 
 	angular.module('chronoCommit.controllers', [])
-		.controller('MyCtrl1', ['$scope',
-			function($scope) {
-
-			}
-		])
 		.controller('dataMapsCtrl', ['$scope', 'countryDataService',
 			function($scope, countryDataService) {
 
 				$scope.countriesData = countryDataService.countriesData;
 
 				$scope.colourGbr = function() {
-					countryDataService.updateCountries()
+					countryDataService.updateCountries();
 				};
+			}
+		])
+		.controller('sliderCtrl', ['$scope', 'countryDataService',
+			function($scope, countryDataService) {
+				$scope.slideValue = 0;
 			}
 		]);
 })();
