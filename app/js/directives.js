@@ -4,6 +4,14 @@
 
 	/* Directives */
 
+	/**
+	 * This directive exists to hold the large world map
+	 * visualisation. This creates its own containing div
+	 * and fills itself using the DataMap library.
+	 *
+	 * Additionally some scope watching occurs, and a
+	 * redraw happens if the data service changes.
+	 */
 	angular.module('chronoCommit.directives', [])
 		.directive('worldMap', function() {
 
@@ -24,6 +32,17 @@
 					data: scope.countries
 				});
 
+				/**
+				 * Watch the countries value (data bound to
+				 * the controller) and if it does, update the
+				 * map drawing.
+				 * @param  {} newValue - Value the object changed to
+				 * @param  {} oldValue - Value the object changed from
+				 */
+				scope.$watch('countries', function(newValue, oldValue) {
+					if (newValue)
+						testMap.updateChoropleth(newValue);
+				}, true);
 			}
 
 			return {
