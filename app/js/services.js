@@ -30,7 +30,7 @@
 			};
 
 			this.updateCountries = function() {
-				this.countriesData['GBR'] = {
+				this.countriesData.GBR = {
 					fillKey: "estonia"
 				};
 			};
