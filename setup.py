@@ -19,7 +19,7 @@ from chronocommit.db import GithubLocationDB
 from chronocommit.archive_importer import JsonArchiveImporter
 
 parser = ArgumentParser(description='Performs setup tasks for ChronoCommit')
-parser.add_argument('commands', nargs='+', default=['import', 'process'], help='Any of: import process')
+parser.add_argument('commands', nargs='*', default=['import', 'process'], help='Any of: import process')
 args = parser.parse_args()
 
 # Setup the database and add the data
