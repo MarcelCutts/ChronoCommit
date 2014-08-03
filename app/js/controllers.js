@@ -19,9 +19,14 @@
 				};
 			}
 		])
-		.controller('sliderCtrl', ['$scope', 'timeDataService',
-			function($scope, timeDataService) {
-				$scope.slideValue = 0;
+		.controller('sliderCtrl', ['$scope', 'countryDataService',
+			function($scope, countryDataService) {
+				$scope.timeAxisPosition = 7;
+
+				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
+					if (newValue)
+						console.log('clipclop' + newValue);
+				}, true);
 			}
 		]);
 })();

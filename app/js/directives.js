@@ -137,7 +137,9 @@
 
 					if (d3.event.sourceEvent) { // not a programmatic event
 						value = x.invert(d3.mouse(this)[0]);
-						console.log("shits happening" + value);
+						scope.$apply(function() {
+							scope.timeAxisPosition = value;
+						});
 						brush.extent([value, value]);
 					}
 
@@ -149,7 +151,7 @@
 			return {
 				restrict: ' A ',
 				scope: {
-					countries: ' = '
+					timeAxisPosition: ' =timeAxisPosition '
 				},
 				link: link
 			};
