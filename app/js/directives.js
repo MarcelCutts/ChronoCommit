@@ -142,7 +142,9 @@
 					var value = brush.extent()[0];
 
 					var newValue = value + 1;
-					if (newValue > xMax) { newValue = 0; }
+					if (newValue > xMax) {
+						newValue = 0;
+					}
 
 					scope.$apply(function() {
 						scope.sliderPosition = newValue;
