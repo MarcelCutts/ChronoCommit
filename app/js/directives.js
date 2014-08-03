@@ -19,8 +19,9 @@
 				function link(scope, element, attrs) {
 					element[0].style.position = 'relative';
 					element[0].style.display = 'block';
-					element[0].style.width = '100vw';
-					element[0].style.height = '100vh';
+					element[0].style.width = '80vw';
+					element[0].style.height = '80vh';
+					element[0].style.margin = 'auto';
 
 					var testMap = new Datamap({
 						element: element[0],
@@ -71,13 +72,13 @@
 
 			function link(scope, element, attrs) {
 				var margin = {
-						top: 50,
+						top: 20,
 						right: 50,
-						bottom: 50,
+						bottom: 20,
 						left: 50
 					},
 					width = window.innerWidth - margin.left - margin.right,
-					height = 200 - margin.bottom - margin.top;
+					height = window.innerHeight - document.getElementById('map-container').clientHeight - margin.bottom - margin.top;
 
 				var x = d3.scale.linear()
 					.domain([0, 168])
