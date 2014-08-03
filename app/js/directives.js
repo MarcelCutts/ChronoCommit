@@ -26,6 +26,7 @@
 					defaultFill: 'hsl(206,0%,50%)',
 					fills: colorService.getColorPalette(206),
 					projection: 'mercator',
+					redrawOnResize: true,
 					data: {},
 					geographyConfig: {
 		            popupTemplate: function(geo, data) {
