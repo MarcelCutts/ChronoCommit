@@ -7,7 +7,7 @@
 			function($scope, timeDataService) {
 
 				timeDataService.getMapData()
-					.then(function(data) { 
+					.then(function(data) {
 						$scope.countriesData = data;
 					});
 			}
@@ -19,11 +19,11 @@
 				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
 					if (newValue)
 						timeDataService.updateDayAndHour(newValue);
-						timeDataService.getMapData()
-							.then(function(data) { 
-								$scope.countriesData = data;
-								$scope.testMap.updateChoropleth(data);
-							});
+					timeDataService.getMapData()
+						.then(function(data) {
+							$scope.countriesData = data;
+							$scope.testMap.updateChoropleth(data);
+						});
 				}, true);
 			}
 		]);
