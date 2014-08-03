@@ -73,5 +73,13 @@ html, body {
 #controls {
   position: absolute;
   bottom: 10px;
+  left: 10px;
   margin: 0 auto;
+}
+
+.panel {
+  background-color: white;
+  border: 1px solid rgb(220, 220, 220);
+  box-shadow: 0 5px 10px 1px rgba(0, 0, 0, 0.5);
+  padding: 10px;
 }

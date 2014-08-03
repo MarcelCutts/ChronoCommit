@@ -71,13 +71,13 @@
 
 			function link(scope, element, attrs) {
 				var margin = {
-						top: 10,
-						right: 25,
-						bottom: 10,
-						left: 25
+						top: 0,
+						right: 10,
+						bottom: 0,
+						left: 10
 					},
 					width = 500 - margin.left - margin.right,
-					height = 100 - margin.bottom - margin.top;
+					height = 40 - margin.bottom - margin.top;
 
 				var x = d3.scale.linear()
 					.domain([0, 167])
