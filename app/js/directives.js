@@ -16,7 +16,7 @@
 		.directive('worldMap', ['colorService',
 			function(colorService) {
 				function link(scope, element, attrs) {
-					element[0].style.position = 'fixed';
+					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
 					element[0].style.width = '100%';
 					element[0].style.height = '100%';
@@ -24,7 +24,7 @@
 					var testMap = new Datamap({
 						element: element[0],
 						defaultFill: 'hsl(206,0%,50%)',
-						fills: colorService.getColorPalette(206),
+						fills: colorService.getColorPalette(339),
 						projection: 'mercator',
 						redrawOnResize: true,
 						data: {},
