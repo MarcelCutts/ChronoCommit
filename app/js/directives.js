@@ -16,10 +16,10 @@
 		.directive('worldMap', ['colorService', function(colorService) {
 
 			function link(scope, element, attrs) {
-				element[0].style.position = 'relative';
+				element[0].style.position = 'fixed';
 				element[0].style.display = 'block';
-				element[0].style.width = '100vw';
-				element[0].style.height = '100vh';
+				element[0].style.width = '100%';
+				element[0].style.height = '100%';
 
 				var testMap = new Datamap({
 					element: element[0],
@@ -70,13 +70,13 @@
 
 			function link(scope, element, attrs) {
 				var margin = {
-						top: 50,
-						right: 50,
-						bottom: 50,
-						left: 50
+						top: 10,
+						right: 25,
+						bottom: 10,
+						left: 25
 					},
-					width = window.innerWidth - margin.left - margin.right,
-					height = 200 - margin.bottom - margin.top;
+					width = 500 - margin.left - margin.right,
+					height = 100 - margin.bottom - margin.top;
 
 				var x = d3.scale.linear()
 					.domain([0, 168])
@@ -100,9 +100,11 @@
 					.call(d3.svg.axis()
 						.scale(x)
 						.orient("bottom")
-						.tickFormat(function(d) {
-							return 'Kadi' + "°";
+						.tickFormat(function(d, i) {
+							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+							return days[i];
 						})
+						.tickValues([0, 24, 48, 72, 96, 120, 144, 168])
 						.tickSize(0)
 						.tickPadding(12))
 					.select(".domain")
@@ -145,7 +147,6 @@
 					}
 
 					handle.attr("cx", x(value));
-					d3.select(element[0]).style("background-color", d3.hsl(value, 0.8, 0.8));
 				}
 			}
 
