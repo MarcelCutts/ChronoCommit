@@ -80,7 +80,7 @@
 					height = 100 - margin.bottom - margin.top;
 
 				var x = d3.scale.linear()
-					.domain([0, 168])
+					.domain([0, 167])
 					.range([0, width])
 					.clamp(true);
 
@@ -105,7 +105,7 @@
 							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 							return days[i];
 						})
-						.tickValues([0, 24, 48, 72, 96, 120, 144, 168])
+						.tickValues([0, 24, 48, 72, 96, 120, 144])
 						.tickSize(0)
 						.tickPadding(12))
 					.select(".domain")
