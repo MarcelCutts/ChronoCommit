@@ -44,6 +44,35 @@
 						}
 					});
 
+          var backgroundId = "sunlight-background";
+
+          var gradient = testMap.svg.append("defs")
+              .append("linearGradient")
+              .attr("id", "sun")
+              .attr("x1", "0%")
+              .attr("y1", "0%")
+              .attr("x2", "100%")
+              .attr("y2", "0%")
+              .attr("spreadMethod", "pad");
+          gradient.append("svg:stop")
+              .attr("offset", "0%")
+              .attr("stop-color", "white")
+              .attr("stop-opacity", 0.6);
+          gradient.append("svg:stop")
+              .attr("offset", "50%")
+              .attr("stop-color", "yellow")
+              .attr("stop-opacity", 0.6);
+          gradient.append("svg:stop")
+              .attr("offset", "100%")
+              .attr("stop-color", "white")
+              .attr("stop-opacity", 0.6);
+
+          var background = testMap.svg.insert("rect", "g")
+              .attr("id" ,backgroundId)
+              .attr("width", "100%")
+              .attr("height", "100%")
+              .attr("fill", "url(#sun)");
+
 					/**
 					 * Watch the countries value (data bound to
 					 * the controller) and if it does, update the
