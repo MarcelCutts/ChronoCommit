@@ -20,4 +20,4 @@ python setup.py
 npm start
 ```
 
-You should then have a service on http://localhost:8000/app/index.html
+You should then have a service on `http://localhost:8000/app/index.html`
