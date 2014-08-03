@@ -142,8 +142,8 @@
 					var value = scope.sliderPosition;
 
 					var newValue = value + 1;
-					if (newValue > xMax) { 
-						newValue = 0; 
+					if (newValue > xMax) {
+						newValue = 0;
 					}
 
 					scope.$apply(function() {
@@ -188,5 +188,17 @@
 				link: link
 			};
 
+		})
+		.directive('projectOverview', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/project-overview.html'
+			};
+		})
+		.directive('projectDescription', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/project-description.html'
+			};
 		});
 })();
