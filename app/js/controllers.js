@@ -3,18 +3,24 @@
 	/* Controllers */
 
 	angular.module('chronoCommit.controllers', [])
-		.controller('dataMapsCtrl', ['$scope', 'countryDataService',
-			function($scope, countryDataService) {
+		.controller('dataMapsCtrl', ['$scope', 'timeDataService',
+			function($scope, timeDataService) {
 
-				$scope.countriesData = countryDataService.countriesData;
+				$scope.day = 2
+				$scope.hour = 17
+
+				timeDataService.getDataFor($scope.day, $scope.hour)
+					.then(function(data) { 
+						$scope.countriesData = data 
+					})
 
 				$scope.colourGbr = function() {
 					countryDataService.updateCountries();
 				};
 			}
 		])
-		.controller('sliderCtrl', ['$scope', 'countryDataService',
-			function($scope, countryDataService) {
+		.controller('sliderCtrl', ['$scope', 'timeDataService',
+			function($scope, timeDataService) {
 				$scope.slideValue = 0;
 			}
 		]);

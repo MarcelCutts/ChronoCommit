@@ -13,7 +13,7 @@
 	 * redraw happens if the data service changes.
 	 */
 	angular.module('chronoCommit.directives', [])
-		.directive('worldMap', function() {
+		.directive('worldMap', ['colorService', function(colorService) {
 
 			function link(scope, element, attrs) {
 				element[0].style.position = 'relative';
@@ -23,13 +23,24 @@
 
 				var testMap = new Datamap({
 					element: element[0],
-					fills: {
-						defaultFill: "#34495E",
-						authorHasTraveledTo: "#fa0fa0",
-						estonia: "#4891D9"
-					},
+					defaultFill: 'hsl(206,0%,50%)',
+					fills: colorService.getColorPalette(206),
 					projection: 'mercator',
-					data: scope.countries
+					data: {},
+					geographyConfig: {
+		            popupTemplate: function(geo, data) {
+		            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>']
+		            		if(data === null) {
+		            			hoverinfo.push('No data')
+		            		} else {
+		            			hoverinfo.push(data.numberOfThings + ' commits')
+		            		}
+			                
+							hoverinfo.push('</div>')
+							return hoverinfo.join('')
+
+			            }
+			        }
 				});
 
 				/**
@@ -53,7 +64,7 @@
 				link: link
 			};
 
-		})
+		}])
 		.directive('colourSlider', function() {
 
 			function link(scope, element, attrs) {

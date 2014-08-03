@@ -5,41 +5,55 @@
 	/* Services */
 	angular.module('chronoCommit.services', [])
 		.service('countryDataService', function() {
-			this.countriesData = {
-				USA: {
-					fillKey: "authorHasTraveledTo"
-				},
-				JPN: {
-					fillKey: "authorHasTraveledTo"
-				},
-				ITA: {
-					fillKey: "authorHasTraveledTo"
-				},
-				CRI: {
-					fillKey: "authorHasTraveledTo"
-				},
-				KOR: {
-					fillKey: "authorHasTraveledTo"
-				},
-				DEU: {
-					fillKey: "authorHasTraveledTo"
-				},
-				EST: {
-					fillKey: "estonia"
-				}
-			};
-
 			this.updateCountries = function() {
 				this.countriesData.GBR = {
 					fillKey: "estonia"
 				};
 			};
 		})
-	.service('timeDataService', function($http) {
-		this.commitData = $http.jsonp('/assets/hourly_commits.json')
+	.service('timeDataService', [ '$http', 'colorService', function($http, colorService) {
+		this.commitData = $http.get('assets/hourly_commits.json').error(function(data, status) { 
+			console.log(status + ': ' + data) 
+		}).success(function(data) { 
+			colorService.setMaxValue(data)
+		})
 
 		this.getDataFor = function(day, hour) {
-			return this.commitData.filter(function(datum) { datum['day'] == day && datum['hour'] == hour })
+			return this.commitData.then(function(response) {
+				return response.data.filter(function(datum) { return datum['day'] == day && datum['hour'] == hour })
+			}).then(function(data) {
+				return data.reduce(function(memo, item) { 
+					memo[item.country] = { 
+						'fillKey': colorService.colorIndex(item.country, item.commits), 
+						'numberOfThings': item.commits 
+					}; 
+					return memo 
+				}, {})
+			})
+		}
+	}])
+	.service('colorService', function() {
+		this.maxValue = 0
+		this.hue = 128
+
+		this.setMaxValue = function(data) {
+			this.maxValue = data.reduce(function(memo, item) {
+				if(memo[item.country] === undefined || memo[item.country] < item.commits) { memo[item.country] = item.commits }
+				return memo
+			}, {})
+		}
+
+		this.getColorPalette = function(hue) {
+			var colors = []
+			for(var saturation = 0; saturation < 100; saturation++) {
+				colors.push('hsl(' + hue + ', ' + saturation + '%, 50%)')
+			}
+
+			return colors
+		},
+
+		this.colorIndex = function(country, value) {
+			return Math.floor(value / this.maxValue[country] * 100)
 		}
 	});
 })();
