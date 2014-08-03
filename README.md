@@ -1,12 +1,13 @@
 # When do countries commit the most?
 
-We took a week's worth of commits from the GitHub Archive and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.
+We took a week's worth of commits from the [GitHub Archive](http://githubarchive.org) and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.
 
-Data processing was completed with Python and SQLite. The data is available in JSON format on our GitHub. The visualisation uses Datamaps with support from AngularJS.
+Data processing was completed with Python and SQLite. The visualisation uses [Datamaps](http://datamaps.github.io/) with support from [AngularJS](https://angularjs.org/).
 
-This visualisation was created as part of the Third Annual GitHub Data Challenge because GitHub is awesome and so are public data sets. The project is on GitHub and we encourage you to poke around the code and contribute!
+This visualisation was created as part of the [Third Annual GitHub Data Challenge](https://github.com/blog/1864-third-annual-github-data-challenge) because GitHub is awesome and so are public data sets. We encourage you to poke around the code and contribute!
 
-## How to use
+## Getting Up And Running
+
 Run the following commands:
 
 ```
