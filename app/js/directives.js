@@ -79,8 +79,9 @@
 					width = 500 - margin.left - margin.right,
 					height = 40 - margin.bottom - margin.top;
 
+				var xMax = 167;
 				var x = d3.scale.linear()
-					.domain([0, 167])
+					.domain([0, xMax])
 					.range([0, width])
 					.clamp(true);
 
@@ -136,10 +137,36 @@
 					.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
 					.call(brush.event);
 
+				// Move the slider to the next value
+				function autonext() {
+					var value = brush.extent()[0];
+
+					var newValue = value + 1;
+					if (newValue > xMax) { newValue = 0; }
+
+					scope.$apply(function() {
+						scope.sliderPosition = newValue;
+					});
+
+					// Animate slider
+					slider
+						.call(brush.event)
+						.transition()
+						.duration(250)
+						.ease("linear")
+						.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
+						.call(brush.event);
+				}
+
+				var autonextHook = setInterval(autonext, 250);
+
 				function brushed() {
 					var value = brush.extent()[0];
 
 					if (d3.event.sourceEvent) { // not a programmatic event
+						// As soon as we get a mouse event, kill autonext()
+						clearInterval(autonextHook);
+
 						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
 							scope.sliderPosition = value;

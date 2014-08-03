@@ -22,7 +22,7 @@
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService',
 			function($scope, timeDataService) {
-				$scope.sliderPosition = 40; // Starting position
+				$scope.sliderPosition = 1; // Starting position
 
 				$scope.$watch('sliderPosition', function(newValue, oldValue) {
 					if (newValue) {
