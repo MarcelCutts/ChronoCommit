@@ -13,7 +13,7 @@
 	 * redraw happens if the data service changes.
 	 */
 	angular.module('chronoCommit.directives', [])
-		.directive('worldMap', ['colorService', 
+		.directive('worldMap', ['colorService',
 			function(colorService) {
 				function link(scope, element, attrs) {
 					element[0].style.position = 'fixed';
@@ -29,19 +29,19 @@
 						redrawOnResize: true,
 						data: {},
 						geographyConfig: {
-			            popupTemplate: function(geo, data) {
-			            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-			            		if(data === null) {
-			            			hoverinfo.push('No data');
-			            		} else {
-			            			hoverinfo.push(data.numberOfThings + ' commits');
-			            		}
-				                
+							popupTemplate: function(geo, data) {
+								var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
+								if (data === null) {
+									hoverinfo.push('No data');
+								} else {
+									hoverinfo.push(data.numberOfThings + ' commits');
+								}
+
 								hoverinfo.push('</div>');
 								return hoverinfo.join('');
 
-				            }
-				        }
+							}
+						}
 					});
 
 					/**
@@ -52,8 +52,9 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-						if (newValue)
+						if (newValue) {
 							testMap.updateChoropleth(newValue);
+						}
 					});
 				}
 
@@ -66,7 +67,7 @@
 				};
 			}
 		])
-		.directive('colourSlider', function() {
+		.directive('timeSlider', function() {
 
 			function link(scope, element, attrs) {
 				var margin = {
@@ -132,7 +133,7 @@
 					.call(brush.event)
 					.transition() // gratuitous intro!
 				.duration(750)
-					.call(brush.extent([70, 70]))
+					.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
 					.call(brush.event);
 
 				function brushed() {
@@ -141,7 +142,7 @@
 					if (d3.event.sourceEvent) { // not a programmatic event
 						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
-							scope.timeAxisPosition = value;
+							scope.sliderPosition = value;
 						});
 						brush.extent([value, value]);
 					}
@@ -151,9 +152,9 @@
 			}
 
 			return {
-				restrict: ' A ',
+				restrict: ' E ',
 				scope: {
-					timeAxisPosition: ' =timeAxisPosition '
+					sliderPosition: ' = '
 				},
 				link: link
 			};
