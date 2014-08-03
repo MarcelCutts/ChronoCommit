@@ -6,6 +6,8 @@ Data processing was completed with Python and SQLite. The visualisation uses [Da
 
 This visualisation was created as part of the [Third Annual GitHub Data Challenge](https://github.com/blog/1864-third-annual-github-data-challenge) because GitHub is awesome and so are public data sets. We encourage you to poke around the code and contribute!
 
+[Check it out now.](http://asgardenterprises.github.io/ChronoCommit/)
+
 ## Getting Up And Running
 
 Run the following commands:
