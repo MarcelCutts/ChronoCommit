@@ -7,7 +7,7 @@
 			function($scope, timeDataService) {
 
 				timeDataService.getMapData()
-					.then(function(data) { 
+					.then(function(data) {
 						$scope.countriesData = data;
 					});
 			}

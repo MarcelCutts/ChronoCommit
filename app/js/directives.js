@@ -13,59 +13,59 @@
 	 * redraw happens if the data service changes.
 	 */
 	angular.module('chronoCommit.directives', [])
-		.directive('worldMap', ['colorService', function(colorService) {
+		.directive('worldMap', ['colorService', 
+			function(colorService) {
+				function link(scope, element, attrs) {
+					element[0].style.position = 'fixed';
+					element[0].style.display = 'block';
+					element[0].style.width = '100%';
+					element[0].style.height = '100%';
 
-			function link(scope, element, attrs) {
-				element[0].style.position = 'fixed';
-				element[0].style.display = 'block';
-				element[0].style.width = '100%';
-				element[0].style.height = '100%';
+					var testMap = new Datamap({
+						element: element[0],
+						defaultFill: 'hsl(206,0%,50%)',
+						fills: colorService.getColorPalette(206),
+						projection: 'mercator',
+						redrawOnResize: true,
+						data: {},
+						geographyConfig: {
+			            popupTemplate: function(geo, data) {
+			            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
+			            		if(data === null) {
+			            			hoverinfo.push('No data');
+			            		} else {
+			            			hoverinfo.push(data.numberOfThings + ' commits');
+			            		}
+				                
+								hoverinfo.push('</div>');
+								return hoverinfo.join('');
 
-				var testMap = new Datamap({
-					element: element[0],
-					defaultFill: 'hsl(206,0%,50%)',
-					fills: colorService.getColorPalette(206),
-					projection: 'mercator',
-					redrawOnResize: true,
-					data: {},
-					geographyConfig: {
-		            popupTemplate: function(geo, data) {
-		            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-		            		if(data === null) {
-		            			hoverinfo.push('No data');
-		            		} else {
-		            			hoverinfo.push(data.numberOfThings + ' commits');
-		            		}
-			                
-							hoverinfo.push('</div>');
-							return hoverinfo.join('');
+				            }
+				        }
+					});
 
-			            }
-			        }
-				});
+					/**
+					 * Watch the countries value (data bound to
+					 * the controller) and if it does, update the
+					 * map drawing.
+					 * @param  {} newValue - Value the object changed to
+					 * @param  {} oldValue - Value the object changed from
+					 */
+					scope.$watchCollection('countries', function(newValue, oldValue) {
+						if (newValue)
+							testMap.updateChoropleth(newValue);
+					});
+				}
 
-				/**
-				 * Watch the countries value (data bound to
-				 * the controller) and if it does, update the
-				 * map drawing.
-				 * @param  {} newValue - Value the object changed to
-				 * @param  {} oldValue - Value the object changed from
-				 */
-				scope.$watchCollection('countries', function(newValue, oldValue) {
-					if (newValue)
-						testMap.updateChoropleth(newValue);
-				});
+				return {
+					restrict: ' E ',
+					scope: {
+						countries: ' = '
+					},
+					link: link
+				};
 			}
-
-			return {
-				restrict: ' E ',
-				scope: {
-					countries: ' = '
-				},
-				link: link
-			};
-
-		}])
+		])
 		.directive('colourSlider', function() {
 
 			function link(scope, element, attrs) {
