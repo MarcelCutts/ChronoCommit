@@ -50,10 +50,10 @@
 				 * @param  {} newValue - Value the object changed to
 				 * @param  {} oldValue - Value the object changed from
 				 */
-				scope.$watch('countries', function(newValue, oldValue) {
+				scope.$watchCollection('countries', function(newValue, oldValue) {
 					if (newValue)
 						testMap.updateChoropleth(newValue);
-				}, true);
+				});
 			}
 
 			return {
@@ -78,7 +78,7 @@
 					height = 200 - margin.bottom - margin.top;
 
 				var x = d3.scale.linear()
-					.domain([0, 180])
+					.domain([0, 168])
 					.range([0, width])
 					.clamp(true);
 

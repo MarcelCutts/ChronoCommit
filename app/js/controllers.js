@@ -6,26 +6,24 @@
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService',
 			function($scope, timeDataService) {
 
-				$scope.day = 2
-				$scope.hour = 17
-
-				timeDataService.getDataFor($scope.day, $scope.hour)
+				timeDataService.getMapData()
 					.then(function(data) { 
 						$scope.countriesData = data 
 					})
-
-				$scope.colourGbr = function() {
-					countryDataService.updateCountries();
-				};
 			}
 		])
-		.controller('sliderCtrl', ['$scope', 'countryDataService',
-			function($scope, countryDataService) {
+		.controller('sliderCtrl', ['$scope', 'timeDataService',
+			function($scope, timeDataService) {
 				$scope.timeAxisPosition = 7;
 
 				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
 					if (newValue)
-						console.log('clipclop' + newValue);
+						timeDataService.updateDayAndHour(newValue)
+						timeDataService.getMapData()
+							.then(function(data) { 
+								$scope.countriesData = data
+								$scope.testMap.updateChoropleth(data);
+							})
 				}, true);
 			}
 		]);
