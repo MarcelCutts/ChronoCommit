@@ -16,7 +16,6 @@
 					// length of the scale we are mapping from
 					var scaleLength = this.sliderScaleMax;
 
-
 					// length of each day
 					var dayLength = scaleLength / 7;
 
@@ -29,6 +28,11 @@
 					// now calculate the hour
 					var dayReminder = sliderValue % dayLength;
 					this.hour = Math.floor(dayReminder / hourLength);
+				};
+
+				this.getTimeDescription = function() {
+					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat'];
+					return days[this.day] + ", " + this.hour + ":00";
 				};
 
 				this.getMapData = function() {
