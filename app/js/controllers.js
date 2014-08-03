@@ -8,8 +8,8 @@
 
 				timeDataService.getMapData()
 					.then(function(data) { 
-						$scope.countriesData = data 
-					})
+						$scope.countriesData = data;
+					});
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService',
@@ -18,12 +18,12 @@
 
 				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
 					if (newValue)
-						timeDataService.updateDayAndHour(newValue)
+						timeDataService.updateDayAndHour(newValue);
 						timeDataService.getMapData()
 							.then(function(data) { 
-								$scope.countriesData = data
+								$scope.countriesData = data;
 								$scope.testMap.updateChoropleth(data);
-							})
+							});
 				}, true);
 			}
 		]);

@@ -29,15 +29,15 @@
 					data: {},
 					geographyConfig: {
 		            popupTemplate: function(geo, data) {
-		            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>']
+		            		var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
 		            		if(data === null) {
-		            			hoverinfo.push('No data')
+		            			hoverinfo.push('No data');
 		            		} else {
-		            			hoverinfo.push(data.numberOfThings + ' commits')
+		            			hoverinfo.push(data.numberOfThings + ' commits');
 		            		}
 			                
-							hoverinfo.push('</div>')
-							return hoverinfo.join('')
+							hoverinfo.push('</div>');
+							return hoverinfo.join('');
 
 			            }
 			        }
@@ -144,7 +144,7 @@
 					}
 
 					handle.attr("cx", x(value));
-					d3.select(element[0]).style("background-color", d3.hsl(value, .8, .8));
+					d3.select(element[0]).style("background-color", d3.hsl(value, 0.8, 0.8));
 				}
 			}
 
