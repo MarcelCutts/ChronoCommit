@@ -24,7 +24,8 @@
   </div>
 
   <div id='controls' class='panel' ng-controller="sliderCtrl">
-    <div colour-slider time-axis-position="timeAxisPosition"></div>
+    <div class="date-text">{{sliderTimeDescription}}</div>
+    <time-slider time-axis-position="timeAxisPosition" slider-position="sliderPosition"></time-slider>
   </div>
 
   <!--[if lt IE 7]>
