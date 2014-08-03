@@ -13,6 +13,7 @@
     "html5-boilerplate": "~4.3.0",
     "d3": "~3.4.11",
     "topojson": "~1.6.15",
-    "datamaps": "~0.3.3"
+    "datamaps": "~0.3.3",
+    "smooth-scroll": "https://github.com/cferdinandi/smooth-scroll.git"
   }
 }
