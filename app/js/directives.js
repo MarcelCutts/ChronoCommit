@@ -41,6 +41,16 @@
 								return hoverinfo.join('');
 
 							}
+						},
+						// handles what happens when you click on a country
+						done: function(datamap) {
+							var svg = datamap.svg;
+							svg.selectAll('.datamaps-subunit').on('click', function(d) {
+								var countryId = d.id;
+								scope.$apply(function() {
+									scope.countryClicked = countryId;
+								});
+							})
 						}
 					});
 
@@ -61,7 +71,8 @@
 				return {
 					restrict: ' E ',
 					scope: {
-						countries: ' = '
+						countries: ' = ',
+						countryClicked: ' = '
 					},
 					link: link
 				};
@@ -142,7 +153,9 @@
 					var value = brush.extent()[0];
 
 					var newValue = value + 1;
-					if (newValue > xMax) { newValue = 0; }
+					if (newValue > xMax) {
+						newValue = 0;
+					}
 
 					scope.$apply(function() {
 						scope.sliderPosition = newValue;

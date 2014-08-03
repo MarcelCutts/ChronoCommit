@@ -6,6 +6,7 @@
 		'chronoCommit.filters',
 		'chronoCommit.services',
 		'chronoCommit.directives',
-		'chronoCommit.controllers'
+		'chronoCommit.controllers',
+		'ngDialog'
 	]);
 })();
