@@ -1,4 +1,4 @@
-#ChronoComit
+#ChronoCommit
 
 ChronoCommit uses GitHub users' location data and commit history to answer the following questions:
    
