@@ -22,7 +22,6 @@
 						timeDataService.getMapData()
 							.then(function(data) { 
 								$scope.countriesData = data;
-								$scope.testMap.updateChoropleth(data);
 							});
 				}, true);
 			}
