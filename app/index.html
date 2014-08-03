@@ -15,7 +15,7 @@
   <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
   <script src="bower_components/d3/d3.js"></script>
   <script src="bower_components/topojson/topojson.js"></script>
-  <script src="bower_components/datamaps/dist/datamaps.world.min.js"></script>
+  <script src="homebrew-datamaps/datamaps.world.js"></script>
 </head>
 <body>
 
@@ -23,8 +23,7 @@
     <world-map countries="countriesData"></world-map>
   </div>
 
-  <div ng-controller="sliderCtrl as slider">
-    <div class='date-display'></div>
+  <div id='controls' class='panel' ng-controller="sliderCtrl">
     <div colour-slider time-axis-position="timeAxisPosition"></div>
   </div>
 
