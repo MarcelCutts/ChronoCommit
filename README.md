@@ -1,13 +1,10 @@
-#ChronoCommit
+# When do countries commit the most?
 
-ChronoCommit uses GitHub users' location data and commit history to answer the following questions:
-   
-* When does a country commit the most during a week?
-* What is the most popular language at certain times of the day?
+We took a week's worth of commits from the GitHub Archive and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.
 
-We find the most commits per hour, independent of country, and use it as the maximum in the colour map.
+Data processing was completed with Python and SQLite. The data is available in JSON format on our GitHub. The visualisation uses Datamaps with support from AngularJS.
 
-The slider should determine the day and time that is shown on the map. The number of commits will be shown by colour.
+This visualisation was created as part of the Third Annual GitHub Data Challenge because GitHub is awesome and so are public data sets. The project is on GitHub and we encourage you to poke around the code and contribute!
 
 ## How to use
 Run the following commands:
