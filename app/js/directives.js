@@ -46,6 +46,14 @@
 
           var backgroundId = "sunlight-background";
 
+          var time = 0;
+
+          function getGradientPosition(time, originalValue){
+            var timeAsPercent = (100 / 24) * time;
+            var currentPercentage = timeAsPercent + originalValue;
+            return (currentPercentage % 101).toString() + '%';
+          }
+
           var gradient = testMap.svg.append("defs")
               .append("linearGradient")
               .attr("id", "sun")
@@ -54,16 +62,25 @@
               .attr("x2", "100%")
               .attr("y2", "0%")
               .attr("spreadMethod", "pad");
-          gradient.append("svg:stop")
-              .attr("offset", "0%")
+
+          var firstBound = gradient.append("svg:stop")
+              .attr("offset", function(){
+                return getGradientPosition(time, 0);
+              })
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
-          gradient.append("svg:stop")
-              .attr("offset", "50%")
+
+          var gradientPeak = gradient.append("svg:stop")
+              .attr("offset", function(){
+                return getGradientPosition(time, 50);
+              })
               .attr("stop-color", "yellow")
               .attr("stop-opacity", 0.6);
-          gradient.append("svg:stop")
-              .attr("offset", "100%")
+
+          var lastBound = gradient.append("svg:stop")
+              .attr("offset", function(){
+                return getGradientPosition(time, 100);
+              })
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
@@ -81,16 +98,35 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-						if (!angular.isUndefinedOrNull(newValue)) {
-							testMap.updateChoropleth(newValue);
-						}
-					});
+            if (!angular.isUndefinedOrNull(newValue)) {
+              testMap.updateChoropleth(newValue);
+            }
+          });
+
+          scope.$watch('currentHour', function(newValue, oldValue) {
+            console.log("NewValue:" + newValue)
+            if (newValue) {
+              time = newValue;
+              firstBound.attr("offset", function(){
+                    return getGradientPosition(time, 0);
+                  });
+
+              gradientPeak.attr("offset", function(){
+                    return getGradientPosition(time, 50);
+                  });
+
+              lastBound.attr("offset", function(){
+                    return getGradientPosition(time, 100);
+                  });
+            }
+          });
 				}
 
 				return {
 					restrict: ' E ',
 					scope: {
-						countries: ' = '
+						countries: ' = ',
+            currentHour : ' = '
 					},
 					link: link
 				};

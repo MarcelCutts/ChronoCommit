@@ -11,6 +11,7 @@
 				}, function(newVal, oldVal) {
 					if (!angular.isUndefinedOrNull(newVal)) {
 						var countriesPromise = timeDataService.getMapData();
+            $scope.currentHour = newVal;
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
 						});
