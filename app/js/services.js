@@ -82,7 +82,7 @@
 			};
 
 			this.colorIndex = function(country, value) {
-				return Math.floor(value / this.maxValue[country] * 100);
+				return Math.floor(value / this.maxValue[country] * 100) - 1;
 			};
 		});
 })();
