@@ -20,14 +20,13 @@
 <body>
 
   <div id='splash'>
-
     <div ng-controller="dataMapsCtrl" id="map-container">
       <world-map countries="countriesData"></world-map>
     </div>
 
     <div id='controls' class='panel' ng-controller="sliderCtrl">
       <div class="date-text">{{sliderTimeDescription}}</div>
-      <time-slider time-axis-position="timeAxisPosition" slider-position="sliderPosition"></time-slider>
+      <time-slider slider-position="sliderPosition"></time-slider>
     </div>
 
     <div id='title' class='panel'>
@@ -35,7 +34,6 @@
       <p>We took a week's worth of commits from the <a href='http://githubarchive.org'>GitHub Archive</a> and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.</p>
       <p><a href='#more'>More information</a></p>
     </div>
-
   </div>
 
   <div id='page'>
