@@ -32,7 +32,7 @@
 
 				this.getTimeDescription = function() {
 					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					return days[this.day] + ", " + this.hour + ":00";
+					return days[this.day] + ", " + this.hour + ":00 (Local Time)";
 				};
 
 				this.getMapData = function() {
