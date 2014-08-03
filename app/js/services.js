@@ -31,7 +31,7 @@
 				};
 
 				this.getMapData = function() {
-					var that = this
+					var that = this;
 
 					return $http.get('assets/hourly_commits.json').error(function(data, status) {
 						console.log(status + ': ' + data);

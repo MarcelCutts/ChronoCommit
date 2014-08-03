@@ -7,9 +7,9 @@
 			function($scope, timeDataService) {
 
 				timeDataService.getMapData()
-					.then(function(data) { 
-						$scope.countriesData = data 
-					})
+					.then(function(data) {
+						$scope.countriesData = data;
+					});
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService',
@@ -18,12 +18,12 @@
 
 				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
 					if (newValue)
-						timeDataService.updateDayAndHour(newValue)
-						timeDataService.getMapData()
-							.then(function(data) { 
-								$scope.countriesData = data
-								$scope.testMap.updateChoropleth(data);
-							})
+						timeDataService.updateDayAndHour(newValue);
+					timeDataService.getMapData()
+						.then(function(data) {
+							$scope.countriesData = data;
+							$scope.testMap.updateChoropleth(data);
+						});
 				}, true);
 			}
 		]);
