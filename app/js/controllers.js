@@ -6,10 +6,18 @@
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService',
 			function($scope, timeDataService) {
 
-				timeDataService.getMapData()
-					.then(function(data) {
-						$scope.countriesData = data;
-					});
+				// Watching service values, but may replace with broadcast
+				// and catching that emission with $scope.$on. We'll see.
+				$scope.$watch(function() {
+					return timeDataService.hour;
+				}, function(newVal, oldVal) {
+					if (newVal) {
+						var countriesPromise = timeDataService.getMapData();
+						var countriesData = countriesPromise.then(function(data) {
+							$scope.countriesData = data;
+						});
+					}
+				}, true);
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService',
@@ -20,16 +28,6 @@
 					if (newValue) {
 						$scope.sliderDate = timeDataService.updateDayAndHour(newValue);
 						$scope.sliderTimeDescription = timeDataService.getTimeDescription();
-					}
-				}, true);
-
-				$scope.$watch('timeAxisPosition', function(newValue, oldValue) {
-					if (newValue) {
-						timeDataService.updateDayAndHour(newValue);
-						timeDataService.getMapData()
-							.then(function(data) {
-								$scope.countriesData = data;
-							});
 					}
 				}, true);
 			}
