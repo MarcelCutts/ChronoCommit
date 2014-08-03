@@ -200,5 +200,11 @@
 				restrict: 'E',
 				templateUrl: 'partials/project-description.html'
 			};
+		})
+		.directive('javascriptInits', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/javascript-inits.html'
+			};
 		});
 })();
