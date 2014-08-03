@@ -46,14 +46,6 @@
 
           var backgroundId = "sunlight-background";
 
-          var time = 0;
-
-          function getGradientPosition(time, originalValue){
-            var timeAsPercent = (100 / 24) * time;
-            var currentPercentage = timeAsPercent + originalValue;
-            return (currentPercentage % 101).toString() + '%';
-          }
-
           var gradient = testMap.svg.append("defs")
               .append("linearGradient")
               .attr("id", "sun")
@@ -64,31 +56,54 @@
               .attr("spreadMethod", "pad");
 
           var firstBound = gradient.append("svg:stop")
-              .attr("offset", function(){
-                return getGradientPosition(time, 0);
-              })
+              .attr("offset", "25%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
           var gradientPeak = gradient.append("svg:stop")
-              .attr("offset", function(){
-                return getGradientPosition(time, 50);
-              })
+              .attr("offset", "50%")
               .attr("stop-color", "yellow")
               .attr("stop-opacity", 0.6);
 
           var lastBound = gradient.append("svg:stop")
-              .attr("offset", function(){
-                return getGradientPosition(time, 100);
-              })
+              .attr("offset", "75%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
-          var background = testMap.svg.insert("rect", "g")
-              .attr("id" ,backgroundId)
-              .attr("width", "100%")
-              .attr("height", "100%")
-              .attr("fill", "url(#sun)");
+          function updateBackgrounds(hour, bgrounds)
+          {
+            var width = window.innerWidth;
+            var widthPerHour = width / 24;
+            var xOffset = hour * widthPerHour;
+
+            for (var i in bgrounds){
+              bgrounds[i]
+                  .attr("transform", "translate(" + xOffset + ",0)")
+                  .attr("width", "100%")
+                  .attr("height", "100%");
+            }
+          }
+
+          // Collect the items used as the background image.
+          var backgrounds = [];
+
+          for (var j = 0; j < 3; j++)
+          {
+            var background = testMap.svg.insert("rect", "g")
+                .attr("id" ,backgroundId)
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("fill", "url(#sun)");
+
+            // Set the initial positions of the backgrounds. One centralised, the other two off screen, left and right.)
+            background.attr("x", function(){
+              return (j - 1) * window.innerWidth;
+            });
+
+            backgrounds.push(background);
+            //backgrounds["background" + i] = background;
+          }
+
 
 					/**
 					 * Watch the countries value (data bound to
@@ -104,20 +119,10 @@
           });
 
           scope.$watch('currentHour', function(newValue, oldValue) {
-            console.log("NewValue:" + newValue)
             if (newValue) {
-              time = newValue;
-              firstBound.attr("offset", function(){
-                    return getGradientPosition(time, 0);
-                  });
-
-              gradientPeak.attr("offset", function(){
-                    return getGradientPosition(time, 50);
-                  });
-
-              lastBound.attr("offset", function(){
-                    return getGradientPosition(time, 100);
-                  });
+              // Don't update the linear gradients. Instead, move the static SVG images.
+              // There should be a copy on either side of the canvas, both off screen.
+              updateBackgrounds(newValue, backgrounds);
             }
           });
 				}
