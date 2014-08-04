@@ -7,10 +7,7 @@
 		'chronoCommit.services',
 		'chronoCommit.directives',
 		'chronoCommit.controllers',
-<<<<<<< HEAD
-		'ngDialog'
-=======
-    'chronoCommit.genericFunctions'
->>>>>>> b682cf412e0332244e4a2a8123c313f62ffbda22
+		'ngDialog',
+		'chronoCommit.genericFunctions'
 	]);
 })();

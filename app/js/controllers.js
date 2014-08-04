@@ -26,7 +26,6 @@
 				// use this ID to launch popup with appropriate country data
 				$scope.countryClick = '';
 				$scope.$watch('countryClick', function(newValue, oldValue) {
-					debugger;
 					if (newValue) {
 						ngDialog.open({
 							template: 'js/countryPopup.html'
@@ -35,8 +34,6 @@
 				}, true);
 
 				$scope.randomValue = 5;
-
-
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService',
