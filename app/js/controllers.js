@@ -30,6 +30,7 @@
 						ngDialog.open({
 							template: 'js/countryPopup.html',
 							controller: 'popupCtrl',
+							className: 'ngdialog-theme-default',
 							closeByEscape: true,
 							closeByDocument: true,
 							scope: $scope
@@ -53,12 +54,10 @@
 		.controller('popupCtrl', ['$scope', 'timeDataService',
 			function($scope, timeDataService) {
 				$scope.spoop = 'spoopy';
-				$scope.countryData = [];
 
 				var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
 				var countryData = countryPromise.then(function(data) {
 					$scope.countryData = data;
-					debugger;
 				});
 			}
 		]);

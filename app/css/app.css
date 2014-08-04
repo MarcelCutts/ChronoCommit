@@ -90,6 +90,11 @@ a:hover {
   pointer-events: none;
 }
 
+.ngdialog-theme-default .ngdialog-content{
+  width: 80% !important;
+  height: 80% !important;
+}
+
 #map-container {
   position: absolute;
   width: 100%;

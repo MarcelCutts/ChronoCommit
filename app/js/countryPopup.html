@@ -1,16 +1,6 @@
 <div class="ngdialog-message" ng-controller='popupCtrl'>
-	<country-graph country-data="countryData" spoop='spoop'></country-graph>
-	<h2>Country data for Estonia, the best country</h2>
-	<ul class="mt">
-		<li>It's full of Estonians {{spoop}}</li>
-		<li>It's got many rocks {{selectedCountry}}</li>
-		<li>Sometimes there is potato</li>
-		<li>Meow meow meow</li>
-		<li>Why am I writing list elements anyway?</li>
-		<country-data
-	</ul>
-	<div class="mt">Hey, look! A button that doesn't do anything!</div>
+	<div>
+		<h2>Country data for Estonia, the best country</h2>
+	</div>
 </div>
-<div class="ngdialog-buttons mt">
-	<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="next()">►</button>
-</div>
+<country-graph country="countryData"></country-graph>

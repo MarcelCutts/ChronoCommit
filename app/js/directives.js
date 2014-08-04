@@ -221,7 +221,9 @@
 		.directive('countryGraph', function() {
 
 			function link(scope, element, attrs) {
-				console.log(scope.countryData);
+				var svg = d3.select(element[0]).append("svg")
+					.attr("width", "90%")
+					.attr("height", "80%")
 			}
 
 			return {
