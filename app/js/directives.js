@@ -143,6 +143,7 @@
             updateBackgrounds(currentHour, previousHour, backgrounds);
           }
 
+          // Initialise the background.
           drawBackground();
 
           // Register the onresize function. Ensure we don't override any existing onresize functionality.
