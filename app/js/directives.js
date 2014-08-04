@@ -98,7 +98,7 @@
                 var widthPerHour = width / 24;
 
                 // Initial offset to line it up correctly.
-                var xOffset = (hour - 20.25) * widthPerHour;
+                var xOffset = -(hour - 3.75) * widthPerHour;
 
                 background
                   .attr("transform", "translate(" + xOffset + ",0)")
