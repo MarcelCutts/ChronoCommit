@@ -47,7 +47,8 @@
 
           var backgroundId = "sunlight-background";
 
-          gradient = testMap.svg.append("defs")
+          function addGradient(){
+            var gradient = testMap.svg.append("defs")
               .append("linearGradient")
               .attr("id", "sun")
               .attr("x1", "0%")
@@ -56,61 +57,102 @@
               .attr("y2", "0%")
               .attr("spreadMethod", "pad");
 
-          firstBound = gradient.append("svg:stop")
+            firstBound = gradient.append("svg:stop")
               .attr("offset", "25%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
-          gradientPeak = gradient.append("svg:stop")
+            gradientPeak = gradient.append("svg:stop")
               .attr("offset", "50%")
               .attr("stop-color", "yellow")
               .attr("stop-opacity", 0.6);
 
-          lastBound = gradient.append("svg:stop")
+            lastBound = gradient.append("svg:stop")
               .attr("offset", "75%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
-
-          // Takes on a D3 selection, and returns the width of the corresponding SVG element.
-          function getWidthOfElement(element){
-            return element[0][0].getBBox().width;
           }
 
-          function updateBackgrounds(hour, bgrounds)
-          {
-            console.log("Hour: " + hour);
-            var width = getWidthOfElement(bgrounds[0]);
-            var widthPerHour = width / 24;
-            var xOffset = hour * widthPerHour;
+          gradient = addGradient();
 
-            for (var i in bgrounds){
-              bgrounds[i]
-                  .attr("transform", "translate(" + xOffset + ",0)")
-                  .attr("width", "100%")
-                  .attr("height", "100%");
-            }
+          // Takes on a D3 selection, and returns the width of the corresponding SVG element.
+          function getWidthOfElementFromD3Selection(selection){
+            return selection[0][0].getBBox().width;
+          }
+
+          // Updates the backgrounds based on the current time.
+          // This assumes that the change between hours is continuous.
+          function updateBackgrounds(hour, previousHour, bgrounds)
+          {
+            // Translate all of the things.
+            // Current location is left, right or center
+            angular.forEach(bgrounds, function (background, currentLocation) {
+              var width = getWidthOfElementFromD3Selection(background);
+              var widthPerHour = width / 24;
+              var xOffset = hour * widthPerHour;
+
+              background
+                .attr("transform", "translate(" + xOffset + ",0)")
+                .attr("width", "100%")
+                .attr("height", "100%");
+            });
           }
 
           // Collect the items used as the background image.
-          var backgrounds = [];
-
-          for (var j = 0; j < 3; j++)
-          {
+          // Adds the background image to SVG, and returns the D3 selection
+          function addBackground(position){
             var background = testMap.svg.insert("rect", "g")
-                .attr("id" ,backgroundId)
-                .attr("width", "100%")
-                .attr("height", "100%")
-                .attr("fill", "url(#sun)");
+              .attr("id" ,backgroundId)
+              .attr("width", "100%")
+              .attr("height", "100%")
+              .attr("fill", "url(#sun)");
 
-            var width = getWidthOfElement(background);
+            var width = getWidthOfElementFromD3Selection(background);
+            var positionForBackground = {
+              "left" : -width,
+              "middle" : 0,
+              "right" : width
+            };
 
-            // Set the initial positions of the backgrounds. One centralised, the other two off screen, left and right.)
-            background.attr("x", function(){
-              return (j - 1) * width;
-            });
+            background.attr("x", positionForBackground[position]);
 
-            backgrounds.push(background);
-            //backgrounds["background" + i] = background;
+            return background;
+          }
+
+          function drawDefaultBackground(){
+            var backgrounds = {};
+
+            backgrounds.left = addBackground("left");
+            backgrounds.middle = addBackground("middle");
+            backgrounds.right = addBackground("right");
+
+            return backgrounds;
+          }
+
+          var backgrounds = drawDefaultBackground();
+          var currentHour, previousHour;
+
+          // Deal with resizing
+          // The map will redraw, overwriting the existing SVG.
+          // Will first need the linear gradient. Then add backgrounds. Finally update the position of the backgrounds.
+          var redrawBackground = function(){
+            gradient = addGradient();
+            backgrounds = drawDefaultBackground();
+            updateBackgrounds(currentHour, previousHour, backgrounds);
+          };
+
+          // Register the onresize function. Ensure we don't override any existing onresize functionality.
+          if(window.onresize !== null) {
+            var existingOnResize = window.onresize;
+
+            window.onresize = function() {
+              existingOnResize();
+              redrawBackground();
+            };
+          } else {
+            window.onresize = function() {
+              redrawBackground();
+            };
           }
 
 					/**
@@ -126,11 +168,22 @@
             }
           });
 
+          /**
+           * Watch the currentHour value (data bound to
+           * the controller) and if it does, update the
+           * background of the map.
+           * @param  {} newValue - Value the object changed to
+           * @param  {} oldValue - Value the object changed from
+           */
           scope.$watch('currentHour', function(newValue, oldValue) {
             if (!angular.isUndefinedOrNull(newValue)) {
               // Move the static SVG images.
               // There is a duplicate image off canvas to the left to simulate scrolling.
               updateBackgrounds(newValue, oldValue, backgrounds);
+
+              // Set these values so that they can be referenced if the page is resized.
+              currentHour = newValue;
+              previousHour = oldValue;
             }
           });
 				}
