@@ -16,6 +16,7 @@
 		.directive('worldMap', ['colorService',
 			function(colorService) {
 				function link(scope, element, attrs) {
+          var gradient, firstBound, gradientPeak, lastBound;
 					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
 					element[0].style.width = '100%';
@@ -46,7 +47,7 @@
 
           var backgroundId = "sunlight-background";
 
-          var gradient = testMap.svg.append("defs")
+          gradient = testMap.svg.append("defs")
               .append("linearGradient")
               .attr("id", "sun")
               .attr("x1", "0%")
@@ -55,24 +56,30 @@
               .attr("y2", "0%")
               .attr("spreadMethod", "pad");
 
-          var firstBound = gradient.append("svg:stop")
+          firstBound = gradient.append("svg:stop")
               .attr("offset", "25%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
-          var gradientPeak = gradient.append("svg:stop")
+          gradientPeak = gradient.append("svg:stop")
               .attr("offset", "50%")
               .attr("stop-color", "yellow")
               .attr("stop-opacity", 0.6);
 
-          var lastBound = gradient.append("svg:stop")
+          lastBound = gradient.append("svg:stop")
               .attr("offset", "75%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
+          // Takes on a D3 selection, and returns the width of the corresponding SVG element.
+          function getWidthOfElement(element){
+            return element[0][0].getBBox().width;
+          }
+
           function updateBackgrounds(hour, bgrounds)
           {
-            var width = window.innerWidth;
+            console.log("Hour: " + hour);
+            var width = getWidthOfElement(bgrounds[0]);
             var widthPerHour = width / 24;
             var xOffset = hour * widthPerHour;
 
@@ -95,15 +102,16 @@
                 .attr("height", "100%")
                 .attr("fill", "url(#sun)");
 
+            var width = getWidthOfElement(background);
+
             // Set the initial positions of the backgrounds. One centralised, the other two off screen, left and right.)
             background.attr("x", function(){
-              return (j - 1) * window.innerWidth;
+              return (j - 1) * width;
             });
 
             backgrounds.push(background);
             //backgrounds["background" + i] = background;
           }
-
 
 					/**
 					 * Watch the countries value (data bound to
@@ -119,7 +127,7 @@
           });
 
           scope.$watch('currentHour', function(newValue, oldValue) {
-            if (newValue) {
+            if (newValue !== undefined && newValue !== null) {
               // Don't update the linear gradients. Instead, move the static SVG images.
               // There should be a copy on either side of the canvas, both off screen.
               updateBackgrounds(newValue, backgrounds);
