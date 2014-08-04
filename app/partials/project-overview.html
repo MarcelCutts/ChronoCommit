@@ -1,5 +1,7 @@
-<div id='title' class='panel'>
-	  <h1>When do countries commit the most?</h1>
-	  <p>We took a week's worth of commits from the <a href='http://githubarchive.org'>GitHub Archive</a> and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.</p>
-	  <p><a data-scroll href='#more'>More information</a></p>
-</div>
+<div id='title' class='panel' ng-controller="overviewCtrl">
+      <h1 ng-click="toggle()">When do countries commit the most?</h1>
+      <div ng-show="visible">
+        <p>We took a week's worth of commits from the <a href='http://githubarchive.org'>GitHub Archive</a> and found out where they came from and when they were done. Countries are coloured based on how many commits were done, relative to the country's maximum commits per hour.</p>
+        <p><a data-scroll href='#more'>More information</a></p>
+      </div>
+    </div>

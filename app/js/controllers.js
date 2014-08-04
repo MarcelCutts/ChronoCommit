@@ -1,13 +1,9 @@
 (function() {
 	'use strict';
 	/* Controllers */
-
-
-
 	angular.module('chronoCommit.controllers', [])
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService',
 			function($scope, timeDataService) {
-
 				// Watching service values, but may replace with broadcast
 				// and catching that emission with $scope.$on. We'll see.
 				$scope.$watch(function() {
@@ -32,6 +28,15 @@
 						$scope.sliderTimeDescription = timeDataService.getTimeDescription();
 					}
 				}, true);
+			}
+		])
+		.controller('overviewCtrl', ['$scope',
+			function($scope) {
+				$scope.visible = true;
+
+				$scope.toggle = function() {
+					$scope.visible = !$scope.visible;
+				};
 			}
 		]);
 })();
