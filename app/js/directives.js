@@ -19,6 +19,10 @@
           // Values stored so that the background can be restored after resizing.
           var gradient, backgrounds, currentHour, previousHour;
 
+          // Set defaults for the hour
+          currentHour = 0;
+          previousHour = 0;
+
 					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
 					element[0].style.width = '100%';
@@ -92,7 +96,9 @@
               angular.forEach(bgrounds, function (background, currentLocation) {
                 var width = getWidthOfElementFromD3Selection(background);
                 var widthPerHour = width / 24;
-                var xOffset = hour * widthPerHour;
+
+                // Initial offset to line it up correctly.
+                var xOffset = (hour - 20.25) * widthPerHour;
 
                 background
                   .attr("transform", "translate(" + xOffset + ",0)")
