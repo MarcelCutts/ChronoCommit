@@ -127,10 +127,10 @@
           });
 
           scope.$watch('currentHour', function(newValue, oldValue) {
-            if (newValue !== undefined && newValue !== null) {
-              // Don't update the linear gradients. Instead, move the static SVG images.
-              // There should be a copy on either side of the canvas, both off screen.
-              updateBackgrounds(newValue, backgrounds);
+            if (!angular.isUndefinedOrNull(newValue)) {
+              // Move the static SVG images.
+              // There is a duplicate image off canvas to the left to simulate scrolling.
+              updateBackgrounds(newValue, oldValue, backgrounds);
             }
           });
 				}
