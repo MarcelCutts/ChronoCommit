@@ -16,7 +16,9 @@
 		.directive('worldMap', ['colorService',
 			function(colorService) {
 				function link(scope, element, attrs) {
-          var gradient, firstBound, gradientPeak, lastBound;
+          // Values stored so that the background can be restored after resizing.
+          var gradient, backgrounds, currentHour, previousHour;
+
 					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
 					element[0].style.width = '100%';
@@ -45,8 +47,9 @@
 						}
 					});
 
-          var backgroundId = "sunlight-background";
+          var backgroundClass = "sunlight-background";
 
+          // Define the linear gradient used for the background in here.
           function addGradient(){
             var gradient = testMap.svg.append("defs")
               .append("linearGradient")
@@ -57,23 +60,23 @@
               .attr("y2", "0%")
               .attr("spreadMethod", "pad");
 
-            firstBound = gradient.append("svg:stop")
+            var firstBound = gradient.append("svg:stop")
               .attr("offset", "25%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
 
-            gradientPeak = gradient.append("svg:stop")
+            var gradientPeak = gradient.append("svg:stop")
               .attr("offset", "50%")
               .attr("stop-color", "yellow")
               .attr("stop-opacity", 0.6);
 
-            lastBound = gradient.append("svg:stop")
+            var lastBound = gradient.append("svg:stop")
               .attr("offset", "75%")
               .attr("stop-color", "white")
               .attr("stop-opacity", 0.6);
-          }
 
-          gradient = addGradient();
+            return gradient;
+          }
 
           // Takes on a D3 selection, and returns the width of the corresponding SVG element.
           function getWidthOfElementFromD3Selection(selection){
@@ -82,27 +85,28 @@
 
           // Updates the backgrounds based on the current time.
           // This assumes that the change between hours is continuous.
-          function updateBackgrounds(hour, previousHour, bgrounds)
-          {
-            // Translate all of the things.
-            // Current location is left, right or center
-            angular.forEach(bgrounds, function (background, currentLocation) {
-              var width = getWidthOfElementFromD3Selection(background);
-              var widthPerHour = width / 24;
-              var xOffset = hour * widthPerHour;
+          function updateBackgrounds(hour, previousHour, bgrounds){
+            if (!angular.isUndefinedOrNull(hour)){
+              // Translate all of the things.
+              // Current location is left, right or center
+              angular.forEach(bgrounds, function (background, currentLocation) {
+                var width = getWidthOfElementFromD3Selection(background);
+                var widthPerHour = width / 24;
+                var xOffset = hour * widthPerHour;
 
-              background
-                .attr("transform", "translate(" + xOffset + ",0)")
-                .attr("width", "100%")
-                .attr("height", "100%");
-            });
+                background
+                  .attr("transform", "translate(" + xOffset + ",0)")
+                  .attr("width", "100%")
+                  .attr("height", "100%");
+              });
+            }
           }
 
           // Collect the items used as the background image.
           // Adds the background image to SVG, and returns the D3 selection
           function addBackground(position){
             var background = testMap.svg.insert("rect", "g")
-              .attr("id" ,backgroundId)
+              .attr("class" ,backgroundClass)
               .attr("width", "100%")
               .attr("height", "100%")
               .attr("fill", "url(#sun)");
@@ -115,10 +119,11 @@
             };
 
             background.attr("x", positionForBackground[position]);
-
             return background;
           }
 
+          // Draws a default background, with 3 images (2 off canvas, one either side).
+          // Returns the d3 background items in an object.
           function drawDefaultBackground(){
             var backgrounds = {};
 
@@ -129,17 +134,16 @@
             return backgrounds;
           }
 
-          var backgrounds = drawDefaultBackground();
-          var currentHour, previousHour;
-
-          // Deal with resizing
+          // Deals with resizing
           // The map will redraw, overwriting the existing SVG.
           // Will first need the linear gradient. Then add backgrounds. Finally update the position of the backgrounds.
-          var redrawBackground = function(){
+          function drawBackground(){
             gradient = addGradient();
             backgrounds = drawDefaultBackground();
             updateBackgrounds(currentHour, previousHour, backgrounds);
-          };
+          }
+
+          drawBackground();
 
           // Register the onresize function. Ensure we don't override any existing onresize functionality.
           if(window.onresize !== null) {
@@ -147,11 +151,11 @@
 
             window.onresize = function() {
               existingOnResize();
-              redrawBackground();
+              drawBackground();
             };
           } else {
             window.onresize = function() {
-              redrawBackground();
+              drawBackground();
             };
           }
 
