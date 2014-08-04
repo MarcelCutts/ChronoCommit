@@ -80,6 +80,18 @@
 							}, {});
 						});
 				};
+
+				// Returns all the data for a particular country.
+				// Data will not be ordered!
+				// A promise is returned. Use promise.then(function(data) { ... }) to get the data.
+				this.getCountryData = function(country_code) {
+					return this.mapDataPromise()
+						.then(function(data) {
+							return data.filter(function(datum) {
+								return datum.country == country_code;
+							});
+						});
+				};
 			}
 		])
 		.service('colorService', function() {
