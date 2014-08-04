@@ -52,7 +52,7 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-						if (newValue) {
+						if (!angular.isUndefinedOrNull(newValue)) {
 							testMap.updateChoropleth(newValue);
 						}
 					});

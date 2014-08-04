@@ -34,7 +34,7 @@
 
 				this.getTimeDescription = function() {
 					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					return days[this.day] + ", " + this.hour + ":00 (Local Time)";
+					return days[this.day] + ", " + this.hour + ":00 (CST)";
 				};
 
 				// Returns a promise that fetches the commit data
@@ -78,6 +78,18 @@
 								};
 								return memo;
 							}, {});
+						});
+				};
+
+				// Returns all the data for a particular country.
+				// Data will not be ordered!
+				// A promise is returned. Use promise.then(function(data) { ... }) to get the data.
+				this.getCountryData = function(country_code) {
+					return this.mapDataPromise()
+						.then(function(data) {
+							return data.filter(function(datum) {
+								return datum.country == country_code;
+							});
 						});
 				};
 			}
