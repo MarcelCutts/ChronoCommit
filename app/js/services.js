@@ -43,8 +43,9 @@
 					var that = this;
 
 					var defer = $q.defer();
-					if(this.data !== null) { defer.resolve(this.data); }
-					else {
+					if (this.data !== null) {
+						defer.resolve(this.data);
+					} else {
 						$http.get('assets/hourly_commits.json').error(function(data, status) {
 							var message = status + ': ' + data;
 							console.log(message);

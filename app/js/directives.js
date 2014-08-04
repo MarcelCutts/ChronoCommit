@@ -217,5 +217,20 @@
 				restrict: 'E',
 				templateUrl: 'partials/javascript-inits.html'
 			};
+		})
+		.directive('countryGraph', function() {
+
+			function link(scope, element, attrs) {
+				console.log(scope.countryData);
+			}
+
+			return {
+				restrict: ' E ',
+				scope: {
+					countryData: ' = ',
+					spoop: ' = '
+				},
+				link: link
+			};
 		});
 })();
