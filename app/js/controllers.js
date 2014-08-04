@@ -2,6 +2,8 @@
 	'use strict';
 	/* Controllers */
 
+
+
 	angular.module('chronoCommit.controllers', [])
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'ngDialog',
 			function($scope, timeDataService, ngDialog) {
@@ -11,7 +13,7 @@
 				$scope.$watch(function() {
 					return timeDataService.hour;
 				}, function(newVal, oldVal) {
-					if (newVal) {
+					if (!angular.isUndefinedOrNull(newVal)) {
 						var countriesPromise = timeDataService.getMapData();
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
@@ -42,7 +44,7 @@
 				$scope.sliderPosition = 1; // Starting position
 
 				$scope.$watch('sliderPosition', function(newValue, oldValue) {
-					if (newValue) {
+					if (!angular.isUndefinedOrNull(newValue)) {
 						$scope.sliderDate = timeDataService.updateDayAndHour(newValue);
 						$scope.sliderTimeDescription = timeDataService.getTimeDescription();
 					}

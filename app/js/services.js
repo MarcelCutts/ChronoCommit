@@ -4,12 +4,14 @@
 
 	/* Services */
 	angular.module('chronoCommit.services', [])
-		.service('timeDataService', ['$http', 'colorService',
-			function($http, colorService) {
+		.service('timeDataService', ['$http', '$q', 'colorService',
+			function($http, $q, colorService) {
 				this.day = 2;
 				this.hour = 17;
 
 				this.sliderScaleMax = 168;
+
+				this.data = null;
 
 				this.updateDayAndHour = function(sliderValue) {
 
@@ -32,29 +34,63 @@
 
 				this.getTimeDescription = function() {
 					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					return days[this.day] + ", " + this.hour + ":00";
+					return days[this.day] + ", " + this.hour + ":00 (CST)";
+				};
+
+				// Returns a promise that fetches the commit data
+				// if it hasn't already been collected.
+				this.mapDataPromise = function() {
+					var that = this;
+
+					var defer = $q.defer();
+					if(this.data !== null) { defer.resolve(this.data); }
+					else {
+						$http.get('assets/hourly_commits.json').error(function(data, status) {
+							var message = status + ': ' + data;
+							console.log(message);
+							defer.reject(message);
+						}).success(function(data) {
+							that.data = data;
+							defer.resolve(data);
+						});
+					}
+
+					return defer.promise;
 				};
 
 				this.getMapData = function() {
 					var that = this;
 
-					return $http.get('assets/hourly_commits.json').error(function(data, status) {
-						console.log(status + ': ' + data);
-					}).success(function(data) {
-						colorService.setMaxValue(data);
-					}).then(function(response) {
-						return response.data.filter(function(datum) {
-							return datum.day == that.day && datum.hour == that.hour;
+					return this.mapDataPromise()
+						.then(function(data) {
+							colorService.setMaxValue(data);
+							return data;
+						})
+						.then(function(data) {
+							return data.filter(function(datum) {
+								return datum.day == that.day && datum.hour == that.hour;
+							});
+						}).then(function(data) {
+							return data.reduce(function(memo, item) {
+								memo[item.country] = {
+									'fillKey': colorService.colorIndex(item.country, item.commits),
+									'numberOfThings': item.commits
+								};
+								return memo;
+							}, {});
 						});
-					}).then(function(data) {
-						return data.reduce(function(memo, item) {
-							memo[item.country] = {
-								'fillKey': colorService.colorIndex(item.country, item.commits),
-								'numberOfThings': item.commits
-							};
-							return memo;
-						}, {});
-					});
+				};
+
+				// Returns all the data for a particular country.
+				// Data will not be ordered!
+				// A promise is returned. Use promise.then(function(data) { ... }) to get the data.
+				this.getCountryData = function(country_code) {
+					return this.mapDataPromise()
+						.then(function(data) {
+							return data.filter(function(datum) {
+								return datum.country == country_code;
+							});
+						});
 				};
 			}
 		])

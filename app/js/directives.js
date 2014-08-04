@@ -62,7 +62,7 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-						if (newValue) {
+						if (!angular.isUndefinedOrNull(newValue)) {
 							testMap.updateChoropleth(newValue);
 						}
 					});
@@ -150,7 +150,7 @@
 
 				// Move the slider to the next value
 				function autonext() {
-					var value = brush.extent()[0];
+					var value = scope.sliderPosition;
 
 					var newValue = value + 1;
 					if (newValue > xMax) {
@@ -199,5 +199,23 @@
 				link: link
 			};
 
+		})
+		.directive('projectOverview', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/project-overview.html'
+			};
+		})
+		.directive('projectDescription', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/project-description.html'
+			};
+		})
+		.directive('javascriptInits', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/javascript-inits.html'
+			};
 		});
 })();
