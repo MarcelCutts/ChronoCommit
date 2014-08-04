@@ -34,7 +34,7 @@
 
 				this.getTimeDescription = function() {
 					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					return days[this.day] + ", " + this.hour + ":00 (Local Time)";
+					return days[this.day] + ", " + this.hour + ":00 (CST)";
 				};
 
 				// Returns a promise that fetches the commit data
