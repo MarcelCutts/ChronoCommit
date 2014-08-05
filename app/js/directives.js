@@ -16,12 +16,12 @@
 		.directive('worldMap', ['colorService', 'utilities',
 			function(colorService, utilities) {
 				function link(scope, element, attrs) {
-          // Values stored so that the background can be restored after resizing.
-          var gradient, backgrounds, currentHour, previousHour;
+					// Values stored so that the background can be restored after resizing.
+					var gradient, backgrounds, currentHour, previousHour;
 
-          // Set defaults for the hour
-          currentHour = 0;
-          previousHour = 0;
+					// Set defaults for the hour
+					currentHour = 0;
+					previousHour = 0;
 
 					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
@@ -51,125 +51,125 @@
 						}
 					});
 
-          var backgroundClass = "sunlight-background";
+					var backgroundClass = "sunlight-background";
 
-          // Define the linear gradient used for the background in here.
-          function addGradient(){
-            var gradient = testMap.svg.append("defs")
-              .append("linearGradient")
-              .attr("id", "sun")
-              .attr("x1", "0%")
-              .attr("y1", "0%")
-              .attr("x2", "100%")
-              .attr("y2", "0%")
-              .attr("spreadMethod", "pad");
+					// Define the linear gradient used for the background in here.
+					function addGradient() {
+						var gradient = testMap.svg.append("defs")
+							.append("linearGradient")
+							.attr("id", "sun")
+							.attr("x1", "0%")
+							.attr("y1", "0%")
+							.attr("x2", "100%")
+							.attr("y2", "0%")
+							.attr("spreadMethod", "pad");
 
-            var firstBound = gradient.append("svg:stop")
-              .attr("offset", "20%")
-              .attr("stop-color", "#0083B9")
-              .attr("stop-opacity", 0.5);
+						var firstBound = gradient.append("svg:stop")
+							.attr("offset", "20%")
+							.attr("stop-color", "#0083B9")
+							.attr("stop-opacity", 0.5);
 
-            var secondBound = gradient.append("svg:stop")
-              .attr("offset", "35%")
-              .attr("stop-color", "midnightblue")
-              .attr("stop-opacity", 1);
+						var secondBound = gradient.append("svg:stop")
+							.attr("offset", "35%")
+							.attr("stop-color", "midnightblue")
+							.attr("stop-opacity", 1);
 
-            var thirdBound = gradient.append("svg:stop")
-              .attr("offset", "65%")
-              .attr("stop-color", "midnightblue")
-              .attr("stop-opacity", 1);
+						var thirdBound = gradient.append("svg:stop")
+							.attr("offset", "65%")
+							.attr("stop-color", "midnightblue")
+							.attr("stop-opacity", 1);
 
-            var lastBound = gradient.append("svg:stop")
-              .attr("offset", "80%")
-              .attr("stop-color", "#0083B9")
-              .attr("stop-opacity", 0.5);
+						var lastBound = gradient.append("svg:stop")
+							.attr("offset", "80%")
+							.attr("stop-color", "#0083B9")
+							.attr("stop-opacity", 0.5);
 
-            return gradient;
-          }
+						return gradient;
+					}
 
-          // Takes on a D3 selection, and returns the width of the corresponding SVG element.
-          function getWidthOfElementFromD3Selection(selection){
-            return selection[0][0].getBBox().width;
-          }
+					// Takes on a D3 selection, and returns the width of the corresponding SVG element.
+					function getWidthOfElementFromD3Selection(selection) {
+						return selection[0][0].getBBox().width;
+					}
 
-          // Updates the backgrounds based on the current time.
-          // This assumes that the change between hours is continuous.
-          function updateBackgrounds(hour, previousHour, bgrounds){
-            if (!angular.isUndefinedOrNull(hour)){
-              // Translate all of the things.
-              // Current location is left, right or center
-              angular.forEach(bgrounds, function (background, currentLocation) {
-                var width = getWidthOfElementFromD3Selection(background);
-                var widthPerHour = width / 24;
+					// Updates the backgrounds based on the current time.
+					// This assumes that the change between hours is continuous.
+					function updateBackgrounds(hour, previousHour, bgrounds) {
+						if (!utilities.isUndefinedOrNull(hour)) {
+							// Translate all of the things.
+							// Current location is left, right or center
+							angular.forEach(bgrounds, function(background, currentLocation) {
+								var width = getWidthOfElementFromD3Selection(background);
+								var widthPerHour = width / 24;
 
-                // Initial offset to line it up correctly.
-                var xOffset = -(hour - 15.75) * widthPerHour;
+								// Initial offset to line it up correctly.
+								var xOffset = -(hour - 15.75) * widthPerHour;
 
-                background
-                  .attr("transform", "translate(" + xOffset + ",0)")
-                  .attr("width", "100%")
-                  .attr("height", "100%");
-              });
-            }
-          }
+								background
+									.attr("transform", "translate(" + xOffset + ",0)")
+									.attr("width", "100%")
+									.attr("height", "100%");
+							});
+						}
+					}
 
-          // Collect the items used as the background image.
-          // Adds the background image to SVG, and returns the D3 selection
-          function addBackground(position){
-            var background = testMap.svg.insert("rect", "g")
-              .attr("class" ,backgroundClass)
-              .attr("width", "100%")
-              .attr("height", "100%")
-              .attr("fill", "url(#sun)");
+					// Collect the items used as the background image.
+					// Adds the background image to SVG, and returns the D3 selection
+					function addBackground(position) {
+						var background = testMap.svg.insert("rect", "g")
+							.attr("class", backgroundClass)
+							.attr("width", "100%")
+							.attr("height", "100%")
+							.attr("fill", "url(#sun)");
 
-            var width = getWidthOfElementFromD3Selection(background);
-            var positionForBackground = {
-              "left" : -width,
-              "middle" : 0,
-              "right" : width
-            };
+						var width = getWidthOfElementFromD3Selection(background);
+						var positionForBackground = {
+							"left": -width,
+							"middle": 0,
+							"right": width
+						};
 
-            background.attr("x", positionForBackground[position]);
-            return background;
-          }
+						background.attr("x", positionForBackground[position]);
+						return background;
+					}
 
-          // Draws a default background, with 3 images (2 off canvas, one either side).
-          // Returns the d3 background items in an object.
-          function drawDefaultBackground(){
-            var backgrounds = {};
+					// Draws a default background, with 3 images (2 off canvas, one either side).
+					// Returns the d3 background items in an object.
+					function drawDefaultBackground() {
+						var backgrounds = {};
 
-            backgrounds.left = addBackground("left");
-            backgrounds.middle = addBackground("middle");
-            backgrounds.right = addBackground("right");
+						backgrounds.left = addBackground("left");
+						backgrounds.middle = addBackground("middle");
+						backgrounds.right = addBackground("right");
 
-            return backgrounds;
-          }
+						return backgrounds;
+					}
 
-          // Deals with resizing
-          // The map will redraw, overwriting the existing SVG.
-          // Will first need the linear gradient. Then add backgrounds. Finally update the position of the backgrounds.
-          function drawBackground(){
-            gradient = addGradient();
-            backgrounds = drawDefaultBackground();
-            updateBackgrounds(currentHour, previousHour, backgrounds);
-          }
+					// Deals with resizing
+					// The map will redraw, overwriting the existing SVG.
+					// Will first need the linear gradient. Then add backgrounds. Finally update the position of the backgrounds.
+					function drawBackground() {
+						gradient = addGradient();
+						backgrounds = drawDefaultBackground();
+						updateBackgrounds(currentHour, previousHour, backgrounds);
+					}
 
-          // Initialise the background.
-          drawBackground();
+					// Initialise the background.
+					drawBackground();
 
-          // Register the onresize function. Ensure we don't override any existing onresize functionality.
-          if(window.onresize !== null) {
-            var existingOnResize = window.onresize;
+					// Register the onresize function. Ensure we don't override any existing onresize functionality.
+					if (window.onresize !== null) {
+						var existingOnResize = window.onresize;
 
-            window.onresize = function() {
-              existingOnResize();
-              drawBackground();
-            };
-          } else {
-            window.onresize = function() {
-              drawBackground();
-            };
-          }
+						window.onresize = function() {
+							existingOnResize();
+							drawBackground();
+						};
+					} else {
+						window.onresize = function() {
+							drawBackground();
+						};
+					}
 
 					/**
 					 * Watch the countries value (data bound to
@@ -179,36 +179,36 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-            if (!angular.isUndefinedOrNull(newValue)) {
-              testMap.updateChoropleth(newValue);
-            }
-          });
+						if (!utilities.isUndefinedOrNull(newValue)) {
+							testMap.updateChoropleth(newValue);
+						}
+					});
 
-          /**
-           * Watch the currentHour value (data bound to
-           * the controller) and if it does, update the
-           * background of the map.
-           * @param  {} newValue - Value the object changed to
-           * @param  {} oldValue - Value the object changed from
-           */
-          scope.$watch('currentHour', function(newValue, oldValue) {
-            if (!angular.isUndefinedOrNull(newValue)) {
-              // Move the static SVG images.
-              // There is a duplicate image off canvas to the left to simulate scrolling.
-              updateBackgrounds(newValue, oldValue, backgrounds);
+					/**
+					 * Watch the currentHour value (data bound to
+					 * the controller) and if it does, update the
+					 * background of the map.
+					 * @param  {} newValue - Value the object changed to
+					 * @param  {} oldValue - Value the object changed from
+					 */
+					scope.$watch('currentHour', function(newValue, oldValue) {
+						if (!utilities.isUndefinedOrNull(newValue)) {
+							// Move the static SVG images.
+							// There is a duplicate image off canvas to the left to simulate scrolling.
+							updateBackgrounds(newValue, oldValue, backgrounds);
 
-              // Set these values so that they can be referenced if the page is resized.
-              currentHour = newValue;
-              previousHour = oldValue;
-            }
-          });
+							// Set these values so that they can be referenced if the page is resized.
+							currentHour = newValue;
+							previousHour = oldValue;
+						}
+					});
 				}
 
 				return {
 					restrict: ' E ',
 					scope: {
 						countries: ' = ',
-            currentHour : ' = '
+						currentHour: ' = '
 					},
 					link: link
 				};
