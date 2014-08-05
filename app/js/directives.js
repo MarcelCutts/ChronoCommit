@@ -221,16 +221,67 @@
 		.directive('countryGraph', function() {
 
 			function link(scope, element, attrs) {
+
+				debugger;
+
+				var w = 1300;
+				var h = 500;
+				var barPadding = 1;
+
+				var testData = [{
+					day: "Monday",
+					commits: 60
+				}, {
+					day: "Tuesday",
+					commits: 30
+				}, {
+					day: "Wednesday",
+					commits: 83
+				}, {
+					day: "Thursday",
+					commits: 63
+				}, {
+					day: "Friday",
+					commits: 7
+				}, {
+					day: "Saturday",
+					commits: 120
+				}, {
+					day: "Sunday",
+					commits: 110
+				}];
+
 				var svg = d3.select(element[0]).append("svg")
 					.attr("width", "90%")
-					.attr("height", "80%")
-			}
+					.attr("height", "80%");
+
+				svg.selectAll("rect")
+					.data(testData)
+					.enter()
+					.append("rect")
+					.attr("x", function(d, i) {
+						return i * (w / testData.length);
+					})
+					.attr("y", function(d) {
+						return h - (d.commits * 4);
+					})
+					.attr("width", w / testData.length - barPadding)
+					.attr("height", function(d) {
+						return d.commits * 4;
+					})
+					.attr("fill", "teal");
+
+				scope.$watch('countryData', function(newValue, oldValue) {
+					if (newValue) {
+						console.log('cake!');
+					}
+				}, true);
+			};
 
 			return {
 				restrict: ' E ',
 				scope: {
-					countryData: ' = ',
-					spoop: ' = '
+					country: ' = '
 				},
 				link: link
 			};

@@ -21,7 +21,7 @@
 					}
 				}, true);
 
-				// when a country is clicked, the clickevent will update countryClick
+				// when a country is clicked, the clickevent will update selectedCountry
 				// with the ID of the currently selected country
 				// use this ID to launch popup with appropriate country data
 				$scope.selectedCountry = '';
@@ -29,11 +29,16 @@
 					if (newValue) {
 						ngDialog.open({
 							template: 'js/countryPopup.html',
-							controller: 'popupCtrl',
 							className: 'ngdialog-theme-default',
 							closeByEscape: true,
 							closeByDocument: true,
+							controller: 'dataMapsCtrl',
 							scope: $scope
+						});
+
+						var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
+						countryPromise.then(function(data) {
+							$scope.country = data;
 						});
 					}
 				}, true);
@@ -49,16 +54,6 @@
 						$scope.sliderTimeDescription = timeDataService.getTimeDescription();
 					}
 				}, true);
-			}
-		])
-		.controller('popupCtrl', ['$scope', 'timeDataService',
-			function($scope, timeDataService) {
-				$scope.spoop = 'spoopy';
-
-				var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
-				var countryData = countryPromise.then(function(data) {
-					$scope.countryData = data;
-				});
 			}
 		]);
 })();
