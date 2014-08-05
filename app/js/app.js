@@ -7,7 +7,9 @@
 		'chronoCommit.services',
 		'chronoCommit.directives',
 		'chronoCommit.controllers',
-		'chronoCommit.genericFunctions',
+		'genericJsUtilities',
 		'duScroll'
-	]).value('duScrollEasing', easeInCubic);
+	]).value('duScrollEasing', function(t) {
+		return t * t * t;
+	});
 })();

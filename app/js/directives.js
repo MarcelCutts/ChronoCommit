@@ -13,8 +13,8 @@
 	 * redraw happens if the data service changes.
 	 */
 	angular.module('chronoCommit.directives', [])
-		.directive('worldMap', ['colorService',
-			function(colorService) {
+		.directive('worldMap', ['colorService', 'utilities',
+			function(colorService, utilities) {
 				function link(scope, element, attrs) {
 					element[0].style.position = 'absolute';
 					element[0].style.display = 'block';
@@ -52,7 +52,7 @@
 					 * @param  {} oldValue - Value the object changed from
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
-						if (!angular.isUndefinedOrNull(newValue)) {
+						if (!utilities.isUndefinedOrNull(newValue)) {
 							testMap.updateChoropleth(newValue);
 						}
 					});
