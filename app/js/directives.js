@@ -222,8 +222,6 @@
 
 			function link(scope, element, attrs) {
 
-				debugger;
-
 				var w = 1300;
 				var h = 500;
 				var barPadding = 1;
@@ -253,7 +251,8 @@
 
 				var svg = d3.select(element[0]).append("svg")
 					.attr("width", "90%")
-					.attr("height", "80%");
+					.attr("height", "80%")
+					.attr("id", "countrySvg");
 
 				svg.selectAll("rect")
 					.data(testData)
