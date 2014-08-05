@@ -211,7 +211,6 @@
 				restrict: 'E',
 				templateUrl: 'partials/project-description.html'
 			};
-<<<<<<< HEAD
 		})
 		.directive('javascriptInits', function() {
 			return {

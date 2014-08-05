@@ -2,23 +2,16 @@
 	'use strict';
 	/* Controllers */
 
-
-
 	angular.module('chronoCommit.controllers', [])
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'ngDialog',
 			function($scope, timeDataService, ngDialog) {
-
-=======
-		.controller('dataMapsCtrl', ['$scope', 'timeDataService',
-			function($scope, timeDataService) {
->>>>>>> 91474d08217a6a7aaf2ed28aff7fc54a603c3af4
 				// Watching service values, but may replace with broadcast
 				// and catching that emission with $scope.$on. We'll see.
 				$scope.$watch(function() {
 					return timeDataService.hour;
 				}, function(newVal, oldVal) {
 					if (!angular.isUndefinedOrNull(newVal)) {
-						var countriesPromise = timeDataService.getMapData();
+				var countriesPromise = timeDataService.getMapData();
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
 						});
