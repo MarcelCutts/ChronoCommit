@@ -1,10 +1,8 @@
 (function() {
 	'use strict';
 	/* Controllers */
-
-
-
 	angular.module('chronoCommit.controllers', [])
+<<<<<<< HEAD
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'ngDialog',
 			function($scope, timeDataService, ngDialog) {
 

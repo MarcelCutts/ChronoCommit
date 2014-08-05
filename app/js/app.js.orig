@@ -7,10 +7,13 @@
 		'chronoCommit.services',
 		'chronoCommit.directives',
 		'chronoCommit.controllers',
+<<<<<<< HEAD
 		'ngDialog',
 		'chronoCommit.genericFunctions'
 	]);
-	'chronoCommit.genericFunctions',
+=======
+		'chronoCommit.genericFunctions',
 		'duScroll'
-]).value('duScrollEasing', easeInCubic);
+	]).value('duScrollEasing', easeInCubic);
+>>>>>>> 91474d08217a6a7aaf2ed28aff7fc54a603c3af4
 })();

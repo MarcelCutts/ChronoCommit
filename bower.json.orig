@@ -15,7 +15,10 @@
     "topojson": "~1.6.15",
     "datamaps": "~0.3.3",
     "smooth-scroll": "https://github.com/cferdinandi/smooth-scroll.git",
-    "ngDialog": "~0.2.6",
+<<<<<<< HEAD
+    "ngDialog": "~0.2.6"
+=======
     "angular-scroll": "~0.6.1"
+>>>>>>> 91474d08217a6a7aaf2ed28aff7fc54a603c3af4
   }
 }
