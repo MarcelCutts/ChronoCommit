@@ -65,19 +65,24 @@
               .attr("spreadMethod", "pad");
 
             var firstBound = gradient.append("svg:stop")
-              .attr("offset", "25%")
-              .attr("stop-color", "white")
-              .attr("stop-opacity", 0.6);
+              .attr("offset", "20%")
+              .attr("stop-color", "#0083B9")
+              .attr("stop-opacity", 0.5);
 
-            var gradientPeak = gradient.append("svg:stop")
-              .attr("offset", "50%")
-              .attr("stop-color", "yellow")
-              .attr("stop-opacity", 0.6);
+            var secondBound = gradient.append("svg:stop")
+              .attr("offset", "35%")
+              .attr("stop-color", "midnightblue")
+              .attr("stop-opacity", 1);
+
+            var thirdBound = gradient.append("svg:stop")
+              .attr("offset", "65%")
+              .attr("stop-color", "midnightblue")
+              .attr("stop-opacity", 1);
 
             var lastBound = gradient.append("svg:stop")
-              .attr("offset", "75%")
-              .attr("stop-color", "white")
-              .attr("stop-opacity", 0.6);
+              .attr("offset", "80%")
+              .attr("stop-color", "#0083B9")
+              .attr("stop-opacity", 0.5);
 
             return gradient;
           }
@@ -98,7 +103,7 @@
                 var widthPerHour = width / 24;
 
                 // Initial offset to line it up correctly.
-                var xOffset = -(hour - 3.75) * widthPerHour;
+                var xOffset = -(hour - 15.75) * widthPerHour;
 
                 background
                   .attr("transform", "translate(" + xOffset + ",0)")
