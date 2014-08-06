@@ -24,7 +24,7 @@
 
   <div id='splash'>
     <div ng-controller="dataMapsCtrl" id="map-container">
-      <world-map countries="countriesData" country-clicked="selectedCountry"></world-map>
+      <world-map countries="countriesData" current-hour="currentHour" country-clicked="selectedCountry"></world-map>
     </div>
 
     <div id='controls' class='panel' ng-controller="sliderCtrl">
@@ -52,6 +52,6 @@
   <script src="js/controllers.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/directives.js"></script>
-  <script src="js/generic-functions.js"></script>
+  <script src="js/generic-utilities.js"></script>
 </body>
 </html>

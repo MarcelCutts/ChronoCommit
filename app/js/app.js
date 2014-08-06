@@ -7,8 +7,10 @@
 		'chronoCommit.services',
 		'chronoCommit.directives',
 		'chronoCommit.controllers',
-		'chronoCommit.genericFunctions',
 		'ngDialog',
+		'genericJsUtilities',
 		'duScroll'
-	]).value('duScrollEasing', easeInCubic);
+	]).value('duScrollEasing', function(t) {
+		return t * t * t;
+	});
 })();
