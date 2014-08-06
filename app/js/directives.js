@@ -65,27 +65,29 @@
 							.attr("y2", "0%")
 							.attr("spreadMethod", "pad");
 
-						var thirdBound = gradient.append("svg:stop")
+						// Star of sunset
+						gradient.append("svg:stop")
 							.attr("offset", "0%")
 							.attr("stop-color", "#0083B9")
 							.attr("stop-opacity", 1);
 
-						var lastBound = gradient.append("svg:stop")
+						// End of sunset
+						gradient.append("svg:stop")
 							.attr("offset", "8%")
 							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
-						var firstBound = gradient.append("svg:stop")
+						// Start of sunrise
+						gradient.append("svg:stop")
 							.attr("offset", "42%")
 							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
-						var secondBound = gradient.append("svg:stop")
+						// End of sunrise
+						gradient.append("svg:stop")
 							.attr("offset", "50%")
 							.attr("stop-color", "#0083B9")
 							.attr("stop-opacity", 1);
-
-						
 
 						return gradient;
 					}

@@ -11,7 +11,7 @@
 				//
 				// Update the map data when the hour changes.
 				$scope.$watch(function() {
-					return timeDataService.hour + (timeDataService.day * 24);
+					return timeDataService.dayHour();
 				}, function(newVal, oldVal) {
 					if (!utilities.isUndefinedOrNull(newVal)) {
             			$scope.currentHour = newVal;
