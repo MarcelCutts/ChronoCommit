@@ -14,9 +14,9 @@
 					return timeDataService.dayHour();
 				}, function(newVal, oldVal) {
 					if (!utilities.isUndefinedOrNull(newVal)) {
-            			$scope.currentHour = newVal;
+						$scope.currentHour = newVal;
 
-            			var countriesPromise = timeDataService.getMapData();
+						var countriesPromise = timeDataService.getMapData();
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
 						});
@@ -45,9 +45,22 @@
 
 			function($scope) {
 				$scope.visible = true;
+				var minimizeIconPath = 'img/minimize.png';
+				var minimizeIconCssClass = "minimize-icon";
+				var maximizeIconPath = 'img/maximize.png';
+				var maximiseIconCssClass = "maximise-icon";
 
-				$scope.toggle = function() {
+				$scope.iconPath = minimizeIconPath;
+				$scope.iconCss = minimizeIconCssClass;
+				$scope.toggleDescriptionVisibility = function() {
 					$scope.visible = !$scope.visible;
+					if ($scope.iconPath === minimizeIconPath) {
+						$scope.iconPath = maximizeIconPath;
+						$scope.iconCss = maximiseIconCssClass;
+					} else {
+						$scope.iconPath = minimizeIconPath;
+						$scope.iconCss = minimizeIconCssClass;
+					}
 				};
 			}
 		]);
