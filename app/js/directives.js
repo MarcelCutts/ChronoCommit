@@ -104,7 +104,7 @@
 							// Translate all of the things.
 							// Current location is left, right or center
 							angular.forEach(bgrounds, function(background, currentLocation) {
-								var width = background.relativeWidth;
+								var width = background.imageWidth;
 								var widthPerHour = width / 24;
 
 								// Initial offset to line it up correctly.
@@ -138,7 +138,7 @@
 
 							// Keep track of the width that the box is covering when at 100%.
 							// This value should be used to calculate translations.
-							background.relativeWidth = width;
+							background.imageWidth = width;
 
 							// Add a small amount of overlap on the svg images.
 							background.attr("width", (1.02 * width) + "px");
