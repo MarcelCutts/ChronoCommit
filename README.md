@@ -33,3 +33,5 @@ To update this, or replace current content:
 3. Ensure an index.html file is available at the top level for GH to digest.
 4. Push the all the client side content to the gh-pages branch.
 5. Wait up to 10 minutes for the changes to manifest.
+
+Pull requests function as normal, meaning updates by those without privileges can still be integrated.
