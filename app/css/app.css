@@ -90,6 +90,11 @@ a:hover {
   pointer-events: none;
 }
 
+.dateline {
+  stroke: yellow;
+  stroke-width: 1px;
+}
+
 #map-container {
   position: absolute;
   width: 100%;

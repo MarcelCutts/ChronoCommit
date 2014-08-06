@@ -113,7 +113,7 @@
 								background
 									.transition(250)
 									.ease('linear')
-									.attr("transform", "translate(" + xOffset + ",0)")
+									.attr("transform", "translate(" + xOffset + ",0)");
 							});
 						}
 					}
@@ -153,8 +153,18 @@
 						updateBackgrounds(currentHour, previousHour, backgrounds);
 					}
 
+					function drawDateline() {
+						testMap.svg.insert("line", "g")
+							.attr("class", "dateline")
+							.attr("x1", "16%")
+							.attr("y1", "0%")
+							.attr("x2", "16%")
+							.attr("y2", "100%");
+					}
+
 					// Initialise the background.
 					drawBackground();
+					drawDateline();
 
 					// Register the onresize function. Ensure we don't override any existing onresize functionality.
 					if (window.onresize !== null) {
@@ -163,10 +173,12 @@
 						window.onresize = function() {
 							existingOnResize();
 							drawBackground();
+							drawDateline();
 						};
 					} else {
 						window.onresize = function() {
 							drawBackground();
+							drawDateline();
 						};
 					}
 
