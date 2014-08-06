@@ -28,21 +28,22 @@
 					element[0].style.width = '100%';
 					element[0].style.height = '100%';
 
+					var palette = colorService.getColorPalette(339);
+					palette.defaultFill = palette[0];
+
 					var testMap = new Datamap({
 						element: element[0],
-						defaultFill: 'hsl(206,0%,50%)',
-						fills: colorService.getColorPalette(339),
+						fills: palette,
 						projection: 'mercator',
 						redrawOnResize: true,
 						data: {},
 						geographyConfig: {
 							popupTemplate: function(geo, data) {
 								var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-								if (data === null) {
-									hoverinfo.push('No data');
-								} else {
-									hoverinfo.push(data.numberOfThings + ' commits');
-								}
+								if (data === null) { data = { numberOfThings: 0 }; }
+
+								hoverinfo.push(data.numberOfThings + ' commit');
+								if (data.numberOfThings != 1) { hoverinfo.push('s'); } // Pluralicious
 
 								hoverinfo.push('</div>');
 								return hoverinfo.join('');
