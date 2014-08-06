@@ -104,7 +104,7 @@
 							// Translate all of the things.
 							// Current location is left, right or center
 							angular.forEach(bgrounds, function(background, currentLocation) {
-								var width = getWidthOfElementFromD3Selection(background);
+								var width = background.relativeWidth;
 								var widthPerHour = width / 24;
 
 								// Initial offset to line it up correctly.
@@ -136,8 +136,14 @@
 								width = getWidthOfElementFromD3Selection(background);
 							}
 
-							background.attr("x", width * bgId);
+							// Keep track of the width that the box is covering when at 100%.
+							// This value should be used to calculate translations.
+							background.relativeWidth = width;
 
+							// Add a small amount of overlap on the svg images.
+							background.attr("width", (1.02 * width) + "px");
+
+							background.attr("x", width * bgId);
 							backgrounds[bgId] = background;
 						}
 
