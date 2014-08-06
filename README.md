@@ -23,3 +23,13 @@ npm start
 ```
 
 You should then have a service on `http://localhost:8000/app/index.html`
+
+## Updating the project page
+A version of the visualisation lives on the ChronoCommit project page at `http://asgardenterprises.github.io/ChronoCommit/)`; this mirrors the content of the gh-pages branch.
+
+To update this, or replace current content:
+1. Gather all the client side code. Currently, this is the contents of /app.
+2. Ensure all the client side dependencies are present (e.g. bower install).
+3. Ensure an index.html file is available at the top level for GH to digest.
+4. Push the all the client side content to the gh-pages branch.
+5. Wait up to 10 minutes for the changes to manifest.
