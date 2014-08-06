@@ -231,7 +231,8 @@
 				};
 			}
 		])
-		.directive('timeSlider', function() {
+		.directive('timeSlider', ['utilities',
+		function(utilities) {
 
 			function link(scope, element, attrs) {
 				var margin = {
@@ -324,7 +325,7 @@
 						.call(brush.event);
 				}
 
-				var autonextHook = setInterval(autonext, 250);
+				var autonextHook;
 
 				function brushed() {
 					var value = brush.extent()[0];
@@ -342,6 +343,18 @@
 
 					handle.attr("cx", x(value));
 				}
+
+				// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
+				scope.$watch('$parent.autoplay', function(newValue, oldValue) {
+					if (!utilities.isUndefinedOrNull(newValue)) {
+						if (newValue === true){
+							autonextHook = setInterval(autonext, 250);
+						}
+						else {
+							clearInterval(autonextHook);
+						}
+					}
+				});
 			}
 
 			return {
@@ -352,7 +365,7 @@
 				link: link
 			};
 
-		})
+		}])
 		.directive('projectOverview', function() {
 			return {
 				restrict: 'E',

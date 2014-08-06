@@ -28,7 +28,30 @@
 			function($scope, timeDataService, utilities) {
 				// Controls the slider.
 
-				$scope.sliderPosition = 0; // Starting position
+				$scope.sliderPosition = 0; // Starting position.
+				$scope.autoplay = true;    // Start with autoplay on.
+				$scope.sliderIconPath = "img/pause.png";
+
+				$scope.setAutoplay = function(){
+					if ($scope.autoplay === true){
+						$scope.autoplay = false;
+					}
+					else {
+						$scope.autoplay = true;
+					}
+				};
+
+				// When set autoplay changes, update the image shown.
+				$scope.$watch('autoplay', function(newValue, oldValue) {
+					if (!utilities.isUndefinedOrNull(newValue)) {
+						if ($scope.autoplay === true){
+							$scope.sliderIconPath = "img/pause.png";
+						}
+						else {
+							$scope.sliderIconPath = "img/play.png";
+						}
+					}
+				}, true);
 
 				// When the slider position changes, update the date and time description.
 				$scope.$watch('sliderPosition', function(newValue, oldValue) {
