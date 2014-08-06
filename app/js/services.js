@@ -120,7 +120,8 @@
 			};
 
 			this.colorIndex = function(country, value) {
-				return Math.floor(value / this.maxValue[country] * 100) - 1;
+				var index = Math.floor(value / this.maxValue[country] * 100) - 1;
+				return index < 0 ? 0 : index;
 			};
 		});
 })();
