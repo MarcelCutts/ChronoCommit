@@ -369,32 +369,8 @@
 
 			function link(scope, element, attrs) {
 
-				var w = 1300;
-				var h = 500;
-				var barPadding = 1;
-
-				var testData = [{
-					day: "Monday",
-					commits: 60
-				}, {
-					day: "Tuesday",
-					commits: 30
-				}, {
-					day: "Wednesday",
-					commits: 83
-				}, {
-					day: "Thursday",
-					commits: 63
-				}, {
-					day: "Friday",
-					commits: 7
-				}, {
-					day: "Saturday",
-					commits: 120
-				}, {
-					day: "Sunday",
-					commits: 110
-				}];
+				// breaking the global variable rules. sorry. improvements welcome
+				var countryData = scope.country;
 
 				/*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
 				nv.addGraph(function() {
@@ -413,15 +389,15 @@
 					;
 
 					chart.xAxis //Chart x-axis settings
-					.axisLabel('Time (ms)')
+					.axisLabel('Day/hour')
 						.tickFormat(d3.format(',r'));
 
 					chart.yAxis //Chart y-axis settings
-					.axisLabel('Voltage (v)')
-						.tickFormat(d3.format('.02f'));
+					.axisLabel('Commits')
+						.tickFormat(d3.format(',r'));
 
 					/* Done setting the chart up? Time to render it!*/
-					var myData = sinAndCos(); //You need data...
+					var myData = getCountryData(countryData); //You need data...
 
 					var svg = d3.select(element[0]).append("svg")
 						.attr("width", "90%")
@@ -436,53 +412,41 @@
 					});
 					return chart;
 				});
-				/**************************************
-				 * Simple test data generator
-				 */
-				function sinAndCos() {
-					var sin = [],
-						sin2 = [],
-						cos = [];
 
-					//Data is represented as an array of {x,y} pairs.
-					for (var i = 0; i < 100; i++) {
-						sin.push({
-							x: i,
-							y: Math.sin(i / 10)
-						});
-						sin2.push({
-							x: i,
-							y: Math.sin(i / 10) * 0.25 + 0.5
-						});
-						cos.push({
-							x: i,
-							y: .5 * Math.cos(i / 10)
-						});
-					}
-
-					//Line chart data should be sent as an array of series objects.
+				function getCountryData(countryData) {
+					var countryCommitArray = getCountryCommitArray(countryData)
 					return [{
-						values: sin, //values - represents the array of {x,y} data points
-						key: 'Sine Wave', //key  - the name of the series.
-						color: '#ff7f0e' //color - optional: choose your own line color.
-					}, {
-						values: cos,
-						key: 'Cosine Wave',
+						values: countryCommitArray,
+						key: 'Commits per hour',
 						color: '#2ca02c'
-					}, {
-						values: sin2,
-						key: 'Another sine wave',
-						color: '#7777ff',
-						area: true //area - set to true if you want this line to turn into a filled area chart.
-					}];
+					}]
 				}
 
+				function getCountryCommitArray(unsortedArray) {
+					var sortedArray = getSortedCountryData(unsortedArray);
+					var countryCommitArray = [];
 
-				scope.$watch('countryData', function(newValue, oldValue) {
-					if (newValue) {
-						console.log('cake!');
+					for (var i = 0; i < sortedArray.length; i++) {
+						countryCommitArray.push({
+							x: i + 1,
+							y: sortedArray[i].commits
+						});
 					}
-				}, true);
+					return countryCommitArray
+				}
+
+				function getSortedCountryData(unsortedArray) {
+					return unsortedArray.sort(function(a, b) {
+						if (a.day < b.day)
+							return -1
+						else if (a.day > b.day)
+							return 1
+						else if (a.hour < b.hour)
+							return -1
+						else
+							return 1
+					})
+				}
 			};
 
 			return {
