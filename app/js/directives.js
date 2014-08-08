@@ -422,7 +422,10 @@
 					}]
 				}
 
-				function getCountryCommitArray(unsortedArray) {
+				// gets the array for a country in the appropriate format
+				function getCountryCommitArray(countryData) {
+
+					var unsortedArray = subMissingDaysAsZeroCommits(countryData);
 					var sortedArray = getSortedCountryData(unsortedArray);
 					var countryCommitArray = [];
 
@@ -435,6 +438,38 @@
 					return countryCommitArray
 				}
 
+				// adds in the hours where there was no commit data as having zero commits that hour
+				function subMissingDaysAsZeroCommits(countryData) {
+
+					// if there is no data, don't bother doing anything
+					if (countryData.length > 0) {
+
+						var exists = false;
+						var country = countryData[0].country;
+
+						for (var day = 0; day < 7; day++) {
+							for (var hour = 0; hour < 24; hour++) {
+								for (var index = 0; index < countryData.length; index++) {
+									if (countryData[index].day == day && countryData[index].hour == hour) {
+										exists = true;
+									}
+								}
+								if (!exists) {
+									countryData.push({
+										country: country,
+										day: day,
+										hour: hour,
+										commits: 0
+									});
+								}
+								exists = false;
+							}
+						}
+					}
+					return countryData;
+				}
+
+				// sorts the countryData to be in chronological order
 				function getSortedCountryData(unsortedArray) {
 					return unsortedArray.sort(function(a, b) {
 						if (a.day < b.day)

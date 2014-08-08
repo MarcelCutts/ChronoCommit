@@ -23,6 +23,7 @@
 				// with the ID of the currently selected country
 				// use this ID to launch popup with appropriate country data
 				$scope.selectedCountry = '';
+				var selectedCountry = '';
 				$scope.$watch('selectedCountry', function(newValue, oldValue) {
 					if (newValue) {
 						ngDialog.open({
@@ -38,6 +39,7 @@
 						countryPromise.then(function(data) {
 							$scope.country = data;
 						});
+						selectedCountry = $scope.selectedCountry;
 					}
 				}, true);
 			}
