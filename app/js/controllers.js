@@ -44,6 +44,12 @@
 						selectedCountry = $scope.selectedCountry;
 					}
 				}, true);
+
+				// reset the selected country to an empty string when the dialog is closed
+				// unless you do this, the popup will not get triggered when you click on the same country twice
+				$scope.$on('ngDialog.closed', function(e, $dialog) {
+					$scope.selectedCountry = '';
+				});
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService', 'utilities',
