@@ -28,21 +28,22 @@
 					element[0].style.width = '100%';
 					element[0].style.height = '100%';
 
+					var palette = colorService.getColorPalette(339);
+					palette.defaultFill = palette[0];
+
 					var testMap = new Datamap({
 						element: element[0],
-						defaultFill: 'hsl(206,0%,50%)',
-						fills: colorService.getColorPalette(339),
+						fills: palette,
 						projection: 'mercator',
 						redrawOnResize: true,
 						data: {},
 						geographyConfig: {
 							popupTemplate: function(geo, data) {
 								var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-								if (data === null) {
-									hoverinfo.push('No data');
-								} else {
-									hoverinfo.push(data.numberOfThings + ' commits');
-								}
+								if (data === null) { data = { numberOfThings: 0 }; }
+
+								hoverinfo.push(data.numberOfThings + ' commit');
+								if (data.numberOfThings != 1) { hoverinfo.push('s'); } // Pluralicious
 
 								hoverinfo.push('</div>');
 								return hoverinfo.join('');
@@ -74,25 +75,29 @@
 							.attr("y2", "0%")
 							.attr("spreadMethod", "pad");
 
-						var firstBound = gradient.append("svg:stop")
-							.attr("offset", "20%")
+						// Star of sunset
+						gradient.append("svg:stop")
+							.attr("offset", "0%")
 							.attr("stop-color", "#0083B9")
-							.attr("stop-opacity", 0.5);
+							.attr("stop-opacity", 1);
 
-						var secondBound = gradient.append("svg:stop")
-							.attr("offset", "35%")
+						// End of sunset
+						gradient.append("svg:stop")
+							.attr("offset", "8%")
 							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
-						var thirdBound = gradient.append("svg:stop")
-							.attr("offset", "65%")
+						// Start of sunrise
+						gradient.append("svg:stop")
+							.attr("offset", "42%")
 							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
-						var lastBound = gradient.append("svg:stop")
-							.attr("offset", "80%")
+						// End of sunrise
+						gradient.append("svg:stop")
+							.attr("offset", "50%")
 							.attr("stop-color", "#0083B9")
-							.attr("stop-opacity", 0.5);
+							.attr("stop-opacity", 1);
 
 						return gradient;
 					}
@@ -109,48 +114,48 @@
 							// Translate all of the things.
 							// Current location is left, right or center
 							angular.forEach(bgrounds, function(background, currentLocation) {
-								var width = getWidthOfElementFromD3Selection(background);
+								var width = background.imageWidth;
 								var widthPerHour = width / 24;
 
 								// Initial offset to line it up correctly.
-								var xOffset = -(hour - 15.75) * widthPerHour;
+								var xOffset = -(hour) * widthPerHour;
 
 								background
-									.attr("transform", "translate(" + xOffset + ",0)")
-									.attr("width", "100%")
-									.attr("height", "100%");
+									.transition(250)
+									.ease('linear')
+									.attr("transform", "translate(" + xOffset + ",0)");
 							});
 						}
 					}
 
 					// Collect the items used as the background image.
 					// Adds the background image to SVG, and returns the D3 selection
-					function addBackground(position) {
-						var background = testMap.svg.insert("rect", "g")
-							.attr("class", backgroundClass)
-							.attr("width", "100%")
-							.attr("height", "100%")
-							.attr("fill", "url(#sun)");
+					function addBackgrounds() {
 
-						var width = getWidthOfElementFromD3Selection(background);
-						var positionForBackground = {
-							"left": -width,
-							"middle": 0,
-							"right": width
-						};
+						// We draw 8 backgrounds; one for each day of the week, plus one for overlap
+						var width = null;
+						var backgrounds = [];
+						for(var bgId = 0; bgId < 8; bgId++) {
+							var background = testMap.svg.insert("rect", "g")
+								.attr("class", backgroundClass)
+								.attr("width", "100%")
+								.attr("height", "100%")
+								.attr("fill", "url(#sun)");
 
-						background.attr("x", positionForBackground[position]);
-						return background;
-					}
+							if(width === null) {
+								width = getWidthOfElementFromD3Selection(background);
+							}
 
-					// Draws a default background, with 3 images (2 off canvas, one either side).
-					// Returns the d3 background items in an object.
-					function drawDefaultBackground() {
-						var backgrounds = {};
+							// Keep track of the width that the box is covering when at 100%.
+							// This value should be used to calculate translations.
+							background.imageWidth = width;
 
-						backgrounds.left = addBackground("left");
-						backgrounds.middle = addBackground("middle");
-						backgrounds.right = addBackground("right");
+							// Add a small amount of overlap on the svg images.
+							background.attr("width", (1.02 * width) + "px");
+
+							background.attr("x", width * bgId);
+							backgrounds[bgId] = background;
+						}
 
 						return backgrounds;
 					}
@@ -160,12 +165,22 @@
 					// Will first need the linear gradient. Then add backgrounds. Finally update the position of the backgrounds.
 					function drawBackground() {
 						gradient = addGradient();
-						backgrounds = drawDefaultBackground();
+						backgrounds = addBackgrounds();
 						updateBackgrounds(currentHour, previousHour, backgrounds);
+					}
+
+					function drawDateline() {
+						testMap.svg.insert("line", "g")
+							.attr("class", "dateline")
+							.attr("x1", "16%")
+							.attr("y1", "0%")
+							.attr("x2", "16%")
+							.attr("y2", "100%");
 					}
 
 					// Initialise the background.
 					drawBackground();
+					drawDateline();
 
 					// Register the onresize function. Ensure we don't override any existing onresize functionality.
 					if (window.onresize !== null) {
@@ -174,10 +189,12 @@
 						window.onresize = function() {
 							existingOnResize();
 							drawBackground();
+							drawDateline();
 						};
 					} else {
 						window.onresize = function() {
 							drawBackground();
+							drawDateline();
 						};
 					}
 

@@ -9,6 +9,11 @@
 				this.day = 2;
 				this.hour = 17;
 
+				// Returns the number of hours since Sunday at 00:00.
+				this.dayHour = function() {
+					return this.hour + this.day * 24;
+				};
+
 				this.sliderScaleMax = 168;
 
 				this.data = null;
@@ -34,7 +39,8 @@
 
 				this.getTimeDescription = function() {
 					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					return days[this.day] + ", " + this.hour + ":00 (CST)";
+					var display_hour = this.hour < 10 ? "0" + this.hour : this.hour;
+					return days[this.day] + ", " + display_hour + ":00 (PDT)";
 				};
 
 				// Returns a promise that fetches the commit data
@@ -119,7 +125,8 @@
 			};
 
 			this.colorIndex = function(country, value) {
-				return Math.floor(value / this.maxValue[country] * 100) - 1;
+				var index = Math.floor(value / this.maxValue[country] * 100) - 1;
+				return index < 0 ? 0 : index;
 			};
 		});
 })();
