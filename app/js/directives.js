@@ -372,47 +372,52 @@
 				// breaking the global variable rules. sorry. improvements welcome
 				var countryData = scope.country;
 
-				/*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
+				// adds the chart
 				nv.addGraph(function() {
 					var chart = nv.models.lineChart()
 						.margin({
 							left: 100,
 							right: 100,
-							top: 100,
+							top: 30,
 							bottom: 150
-						}) //Adjust chart margins to give the x-axis some breathing room.
-						.useInteractiveGuideline(true) //We want nice looking tooltips and a guideline!
-						.transitionDuration(350) //how fast do you want the lines to transition?
-						.showLegend(true) //Show the legend, allowing users to turn on/off line series.
-						.showYAxis(true) //Show the y-axis
-						.showXAxis(true) //Show the x-axis
-					;
+						})
+						.useInteractiveGuideline(true)
+						.transitionDuration(350)
+						.showLegend(false)
+						.showYAxis(true)
+						.showXAxis(true);
 
-					chart.xAxis //Chart x-axis settings
-					.axisLabel('Day/hour')
+
+
+					chart.xAxis
+						.axisLabel('Day/hour')
+						.tickFormat(function(d, i) {
+							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+							return days[i];
+						})
+						.tickValues([0, 24, 48, 72, 96, 120, 144]);
+
+					chart.yAxis
+						.axisLabel('Commits')
 						.tickFormat(d3.format(',r'));
 
-					chart.yAxis //Chart y-axis settings
-					.axisLabel('Commits')
-						.tickFormat(d3.format(',r'));
-
-					/* Done setting the chart up? Time to render it!*/
-					var myData = getCountryData(countryData); //You need data...
+					var myData = getCountryData(countryData);
 
 					var svg = d3.select(element[0]).append("svg")
 						.attr("width", "90%")
 						.attr("height", "70%")
 						.attr("id", "countrySvg")
-						.datum(myData) //Populate the <svg> element with chart data...
-						.call(chart); //Finally, render the chart!
+						.datum(myData)
+						.call(chart);
 
-					//Update the chart when window resizes.
+					// Update the chart when window resizes.
 					nv.utils.windowResize(function() {
 						chart.update()
 					});
 					return chart;
 				});
 
+				// gets the dataset for nvd3
 				function getCountryData(countryData) {
 					var countryCommitArray = getCountryCommitArray(countryData)
 					return [{
