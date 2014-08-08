@@ -32,7 +32,7 @@
 				$scope.autoplay = true;    // Start with autoplay on.
 				$scope.sliderIconPath = "img/pause.png";
 
-				$scope.setAutoplay = function(){
+				$scope.toggleAutoplay = function(){
 					if ($scope.autoplay === true){
 						$scope.autoplay = false;
 					}
