@@ -40,10 +40,16 @@
 						geographyConfig: {
 							popupTemplate: function(geo, data) {
 								var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-								if (data === null) { data = { numberOfThings: 0 }; }
+								if (data === null) {
+									data = {
+										numberOfThings: 0
+									};
+								}
 
 								hoverinfo.push(data.numberOfThings + ' commit');
-								if (data.numberOfThings != 1) { hoverinfo.push('s'); } // Pluralicious
+								if (data.numberOfThings != 1) {
+									hoverinfo.push('s');
+								} // Pluralicious
 
 								hoverinfo.push('</div>');
 								return hoverinfo.join('');
@@ -135,14 +141,14 @@
 						// We draw 8 backgrounds; one for each day of the week, plus one for overlap
 						var width = null;
 						var backgrounds = [];
-						for(var bgId = 0; bgId < 8; bgId++) {
+						for (var bgId = 0; bgId < 8; bgId++) {
 							var background = testMap.svg.insert("rect", "g")
 								.attr("class", backgroundClass)
 								.attr("width", "100%")
 								.attr("height", "100%")
 								.attr("fill", "url(#sun)");
 
-							if(width === null) {
+							if (width === null) {
 								width = getWidthOfElementFromD3Selection(background);
 							}
 
@@ -404,19 +410,17 @@
 						.showYAxis(true)
 						.showXAxis(true);
 
-
-
 					chart.xAxis
 						.axisLabel('Day/hour')
 						.tickFormat(function(d, i) {
 							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 							return days[i];
 						})
-						.tickValues([0, 24, 48, 72, 96, 120, 144]);
+						.tickValues([1, 25, 49, 73, 97, 121, 145]);
 
 					chart.yAxis
 						.axisLabel('Commits')
-						.tickFormat(d3.format(',r'));
+						.tickFormat(d3.format('d'));
 
 					var myData = getCountryData(countryData);
 
