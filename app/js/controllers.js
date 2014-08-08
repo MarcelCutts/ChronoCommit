@@ -3,15 +3,8 @@
 	/* Controllers */
 
 	angular.module('chronoCommit.controllers', [])
-<<<<<<< HEAD
 		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities', 'ngDialog',
 			function($scope, timeDataService, utilities, ngDialog) {
-=======
-		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities',
-			// Controls the world map.
-
-			function($scope, timeDataService, utilities) {
->>>>>>> 3f1e7468cffa340b17f720ba21e35fa50dd39e0f
 				// Watching service values, but may replace with broadcast
 				// and catching that emission with $scope.$on. We'll see.
 				//
@@ -21,12 +14,7 @@
 				}, function(newVal, oldVal) {
 					if (!utilities.isUndefinedOrNull(newVal)) {
 						$scope.currentHour = newVal;
-
 						var countriesPromise = timeDataService.getMapData();
-<<<<<<< HEAD
-						$scope.currentHour = newVal;
-=======
->>>>>>> 3f1e7468cffa340b17f720ba21e35fa50dd39e0f
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
 						});

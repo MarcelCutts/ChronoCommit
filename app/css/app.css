@@ -90,7 +90,6 @@ a:hover {
   pointer-events: none;
 }
 
-<<<<<<< HEAD
 .ngdialog-theme-default .ngdialog-content{
   width: 80% !important;
   height: 80% !important;
@@ -100,11 +99,11 @@ a:hover {
   position: absolute;
   width: 100%;
   height: 100%;
-=======
+}
+
 .dateline {
   stroke: yellow;
   stroke-width: 1px;
->>>>>>> 3f1e7468cffa340b17f720ba21e35fa50dd39e0f
 }
 
 #map-container {
