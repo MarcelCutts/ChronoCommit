@@ -82,6 +82,12 @@ a:hover {
   stroke-linecap: round;
 }
 
+.axis text{
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+}
+
 .slider .handle {
   fill: #fff;
   stroke: #000;
