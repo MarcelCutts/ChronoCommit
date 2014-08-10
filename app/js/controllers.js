@@ -44,12 +44,17 @@
 			// The view is available in project-overview.html
 
 			function($scope) {
+
+				// Set of states for the overview's top right control
 				$scope.visible = true;
 				var minimizeIconPath = 'img/minimize.png';
 				var minimizeIconCssClass = "minimize-icon";
 				var maximizeIconPath = 'img/maximize.png';
 				var maximiseIconCssClass = "maximise-icon";
 
+				// Set of current states and the function
+				// that toggles the states between the minimised
+				// and maximised overview control
 				$scope.iconPath = minimizeIconPath;
 				$scope.iconCss = minimizeIconCssClass;
 				$scope.toggleDescriptionVisibility = function() {
