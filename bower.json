@@ -1,8 +1,8 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "ChronoCommit",
+  "description": "Data visualisation of Github commits across tme",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "homepage": "https://github.com/AsgardEnterprises/ChronoCommit",
   "license": "MIT",
   "private": true,
   "dependencies": {
