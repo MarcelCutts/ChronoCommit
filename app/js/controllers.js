@@ -24,34 +24,28 @@
 				}, true);
 			}
 		])
-		.controller('sliderCtrl', ['$scope', 'timeDataService', 'utilities',
-			function($scope, timeDataService, utilities) {
+		.controller('sliderCtrl', ['$scope', 'timeDataService', 'autoplayService', 'utilities',
+			function($scope, timeDataService, autoplayService, utilities) {
 				// Controls the slider.
 
 				$scope.sliderPosition = 0; // Starting position.
-				$scope.autoplay = true;    // Start with autoplay on.
-				$scope.sliderIconPath = "img/pause.png";
 
 				$scope.toggleAutoplay = function(){
-					if ($scope.autoplay === true){
-						$scope.autoplay = false;
-					}
-					else {
-						$scope.autoplay = true;
-					}
+					autoplayService.toggleAutoplay();
 				};
 
-				// When set autoplay changes, update the image shown.
-				$scope.$watch('autoplay', function(newValue, oldValue) {
-					if (!utilities.isUndefinedOrNull(newValue)) {
-						if ($scope.autoplay === true){
-							$scope.sliderIconPath = "img/pause.png";
-						}
-						else {
-							$scope.sliderIconPath = "img/play.png";
-						}
+				// Register this method with the autoplay service so it will update as required.
+				autoplayService.registerObserverCallback(function(autoplayState){
+					if (autoplayState === true){
+						$scope.sliderIconPath = "img/pause.png";
 					}
-				}, true);
+					else {
+						$scope.sliderIconPath = "img/play.png";
+					}
+				});
+
+				// Start the autoplay to begin with.
+				autoplayService.setAutoplayState(true);
 
 				// When the slider position changes, update the date and time description.
 				$scope.$watch('sliderPosition', function(newValue, oldValue) {

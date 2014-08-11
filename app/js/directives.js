@@ -231,8 +231,8 @@
 				};
 			}
 		])
-		.directive('timeSlider', ['utilities',
-		function(utilities) {
+		.directive('timeSlider', ['autoplayService', 'utilities',
+		function(autoplayService, utilities) {
 
 			function link(scope, element, attrs) {
 				var margin = {
@@ -332,8 +332,7 @@
 
 					if (d3.event.sourceEvent) { // not a programmatic event
 						// As soon as we get a mouse event, kill autonext()
-						clearInterval(autonextHook);
-						scope.$parent.autoplay = false;
+						autoplayService.setAutoplayState(false);
 
 						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
@@ -346,14 +345,12 @@
 				}
 
 				// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
-				scope.$watch('$parent.autoplay', function(newValue, oldValue) {
-					if (!utilities.isUndefinedOrNull(newValue)) {
-						if (newValue === true){
-							autonextHook = setInterval(autonext, 250);
-						}
-						else {
-							clearInterval(autonextHook);
-						}
+				autoplayService.registerObserverCallback(function(autoplayState){
+					if (autoplayState === true){
+						autonextHook = setInterval(autonext, 250);
+					}
+					else {
+						clearInterval(autonextHook);
 					}
 				});
 			}

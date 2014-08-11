@@ -128,5 +128,43 @@
 				var index = Math.floor(value / this.maxValue[country] * 100) - 1;
 				return index < 0 ? 0 : index;
 			};
+		})
+		.service('autoplayService', function(){
+			// Set this to false as a default.
+			var autoplayState = false;
+			var observerCallbacks = [];
+
+			// Register an observer callback
+			this.registerObserverCallback = function(callback){
+				observerCallbacks.push(callback);
+
+				// Execute the callback - if it is registered after a state change on initialisation,
+				// the callback won't have initially been called in the part of the app that is registering it.
+				// Execute it to ensure the state is up to date in that part of the application.
+				callback(autoplayState);
+			};
+
+			// Called when autoplay state updated
+			var notifyObservers = function(){
+				angular.forEach(observerCallbacks, function(callback){
+					callback(autoplayState);
+				});
+			};
+
+			this.setAutoplayState = function (state) {
+				autoplayState = state;
+				notifyObservers();
+			};
+
+			this.toggleAutoplay = function () {
+				if (autoplayState === true) {
+					autoplayState = false;
+				}
+				else {
+					autoplayState = true;
+				}
+
+				notifyObservers();
+			};
 		});
 })();
