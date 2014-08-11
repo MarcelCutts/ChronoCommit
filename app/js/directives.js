@@ -333,6 +333,7 @@
 					if (d3.event.sourceEvent) { // not a programmatic event
 						// As soon as we get a mouse event, kill autonext()
 						clearInterval(autonextHook);
+						scope.$parent.autoplay = false;
 
 						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
