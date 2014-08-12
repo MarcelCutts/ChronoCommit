@@ -231,7 +231,8 @@
 				};
 			}
 		])
-		.directive('timeSlider', function() {
+		.directive('timeSlider', ['autoplayService', 'utilities',
+		function(autoplayService, utilities) {
 
 			function link(scope, element, attrs) {
 				var margin = {
@@ -324,14 +325,14 @@
 						.call(brush.event);
 				}
 
-				var autonextHook = setInterval(autonext, 250);
+				var autonextHook;
 
 				function brushed() {
 					var value = brush.extent()[0];
 
 					if (d3.event.sourceEvent) { // not a programmatic event
 						// As soon as we get a mouse event, kill autonext()
-						clearInterval(autonextHook);
+						autoplayService.setAutoplayState(false);
 
 						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
@@ -342,6 +343,16 @@
 
 					handle.attr("cx", x(value));
 				}
+
+				// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
+				autoplayService.registerObserverCallback(function(autoplayState){
+					if (autoplayState === true){
+						autonextHook = setInterval(autonext, 250);
+					}
+					else {
+						clearInterval(autonextHook);
+					}
+				});
 			}
 
 			return {
@@ -352,7 +363,7 @@
 				link: link
 			};
 
-		})
+		}])
 		.directive('projectOverview', function() {
 			return {
 				restrict: 'E',

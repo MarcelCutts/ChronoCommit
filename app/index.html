@@ -26,6 +26,7 @@
     </div>
 
     <div id='controls' class='panel' ng-controller="sliderCtrl">
+      <img ng-src="{{sliderIconPath}}" ng-click="toggleAutoplay()" class="play-pause-icon" />
       <div class="date-text">{{sliderTimeDescription}}</div>
       <time-slider slider-position="sliderPosition"></time-slider>
     </div>
