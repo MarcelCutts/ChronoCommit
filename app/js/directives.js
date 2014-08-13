@@ -68,25 +68,25 @@
 						// Star of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "0%")
-							.attr("stop-color", "hsl(202, 100%, 30%)")
+							.attr("stop-color", "#0083B9")
 							.attr("stop-opacity", 1);
 
 						// End of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "8%")
-							.attr("stop-color", "hsl(202, 100%, 20%)")
+							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
 						// Start of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "42%")
-							.attr("stop-color", "hsl(202, 100%, 20%)")
+							.attr("stop-color", "midnightblue")
 							.attr("stop-opacity", 1);
 
 						// End of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "50%")
-							.attr("stop-color", "hsl(202, 100%, 30%)")
+							.attr("stop-color", "#0083B9")
 							.attr("stop-opacity", 1);
 
 						return gradient;
@@ -98,44 +98,22 @@
 					}
 
 					// Updates the backgrounds based on the current time.
-					function updateBackgrounds(dayHour, previousDayHour, bgrounds) {
-						var hour = dayHour % 24,
-							previousHour = previousDayHour % 24;
-
+					// This assumes that the change between hours is continuous.
+					function updateBackgrounds(hour, previousHour, bgrounds) {
 						if (!utilities.isUndefinedOrNull(hour)) {
 							// Translate all of the things.
-							angular.forEach(bgrounds, function(background) {
+							// Current location is left, right or center
+							angular.forEach(bgrounds, function(background, currentLocation) {
 								var width = background.imageWidth;
 								var widthPerHour = width / 24;
 
 								// Initial offset to line it up correctly.
 								var xOffset = -(hour) * widthPerHour;
 
-								// When we go from one end of the scale to the other (on autoplay)
-								// we alter the offset without transition to avoid a dodgy transition.
-								if(hour === 0 && previousHour > 20) {
-									// Get the x transform co-ordinate
-									var currentOffset = background.attr("transform");
-									currentOffset = "[" + currentOffset.slice(10, -1) + "]";
-									currentOffset = JSON.parse(currentOffset)[0];
-
-									var equivalentOffset = currentOffset + width;
-
-									background
-										.transition()
-										.attr("transform", "translate(" + equivalentOffset + ",0)")
-										.transition(250)
-										.ease('linear')
-										.attr("transform", "translate(" + xOffset + ",0)");
-
-									d3.timer.flush();
-								}
-								else {
-									background
-										.transition(250)
-										.ease('linear')
-										.attr("transform", "translate(" + xOffset + ",0)");
-								}
+								background
+									.transition(250)
+									.ease('linear')
+									.attr("transform", "translate(" + xOffset + ",0)");
 							});
 						}
 					}
