@@ -399,7 +399,8 @@
 				templateUrl: 'partials/javascript-inits.html'
 			};
 		})
-		.directive('countryGraph', function() {
+		.directive('countryGraph', ['utilities', 
+			function(utilities) {
 
 			function link(scope, element, attrs) {
 
@@ -417,11 +418,14 @@
 							top: 30,
 							bottom: 150
 						})
-						.useInteractiveGuideline(true)
 						.transitionDuration(350)
 						.showLegend(false)
 						.showYAxis(true)
-						.showXAxis(true);
+						.showXAxis(true)
+						.tooltips(true)
+            .tooltipContent(function (key, x, y, e, graph) {
+              return '<p>' + e.point.y + ' commits for ' + utilities.dayHourToString(e.point.x) + '</p>';
+            })
 
 					chart.xAxis
 						.axisLabel('Day/hour (PDT)')
@@ -530,5 +534,5 @@
 				},
 				link: link
 			};
-		});
+		}]);
 })();

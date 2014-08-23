@@ -4,8 +4,8 @@
 
 	/* Services */
 	angular.module('chronoCommit.services', [])
-		.service('timeDataService', ['$http', '$q', 'colorService',
-			function($http, $q, colorService) {
+		.service('timeDataService', ['$http', '$q', 'colorService', 'utilities',
+			function($http, $q, colorService, utilities) {
 				this.day = 2;
 				this.hour = 17;
 
@@ -38,9 +38,7 @@
 				};
 
 				this.getTimeDescription = function() {
-					var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-					var display_hour = this.hour < 10 ? "0" + this.hour : this.hour;
-					return days[this.day] + ", " + display_hour + ":00 (PDT)";
+					return utilities.dayHourToString(this.dayHour());
 				};
 
 				// Returns a promise that fetches the commit data
