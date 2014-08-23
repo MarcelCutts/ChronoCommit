@@ -31,7 +31,7 @@
 					var palette = colorService.getColorPalette(339);
 					palette.defaultFill = palette[0];
 
-					var testMap = new Datamap({
+					var worldMap = new Datamap({
 						element: element[0],
 						fills: palette,
 						projection: 'mercator',
@@ -72,7 +72,7 @@
 
 					// Define the linear gradient used for the background in here.
 					function addGradient() {
-						var gradient = testMap.svg.append("defs")
+						var gradient = worldMap.svg.append("defs")
 							.append("linearGradient")
 							.attr("id", "sun")
 							.attr("x1", "0%")
@@ -84,25 +84,25 @@
 						// Star of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "0%")
-							.attr("stop-color", "#0083B9")
+							.attr("stop-color", "hsl(202, 100%, 30%)")
 							.attr("stop-opacity", 1);
 
 						// End of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "8%")
-							.attr("stop-color", "midnightblue")
+							.attr("stop-color", "hsl(202, 100%, 20%)")
 							.attr("stop-opacity", 1);
 
 						// Start of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "42%")
-							.attr("stop-color", "midnightblue")
+							.attr("stop-color", "hsl(202, 100%, 20%)")
 							.attr("stop-opacity", 1);
 
 						// End of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "50%")
-							.attr("stop-color", "#0083B9")
+							.attr("stop-color", "hsl(202, 100%, 30%)")
 							.attr("stop-opacity", 1);
 
 						return gradient;
@@ -142,7 +142,7 @@
 						var width = null;
 						var backgrounds = [];
 						for (var bgId = 0; bgId < 8; bgId++) {
-							var background = testMap.svg.insert("rect", "g")
+							var background = worldMap.svg.insert("rect", "g")
 								.attr("class", backgroundClass)
 								.attr("width", "100%")
 								.attr("height", "100%")
@@ -176,7 +176,7 @@
 					}
 
 					function drawDateline() {
-						testMap.svg.insert("line", "g")
+						worldMap.svg.insert("line", "g")
 							.attr("class", "dateline")
 							.attr("x1", "16%")
 							.attr("y1", "0%")
@@ -213,7 +213,7 @@
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
 						if (!utilities.isUndefinedOrNull(newValue)) {
-							testMap.updateChoropleth(newValue);
+							worldMap.updateChoropleth(newValue);
 						}
 					});
 
