@@ -392,8 +392,10 @@
 
 			function link(scope, element, attrs) {
 
-				// breaking the global variable rules. sorry. improvements welcome
 				var countryData = scope.country;
+
+				// set the country label to be the country that was clicked on
+				// scope.country.current_country = "placeholder";
 
 				// adds the chart
 				nv.addGraph(function() {
@@ -446,7 +448,7 @@
 						key: 'Commits per hour',
 						color: '#2ca02c'
 					}]
-				}
+				};
 
 				// gets the array for a country in the appropriate format
 				function getCountryCommitArray(countryData) {

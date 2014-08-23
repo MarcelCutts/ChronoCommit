@@ -37,10 +37,15 @@
 							scope: $scope
 						});
 
+						// gets the actual commit data for the country
 						var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
 						countryPromise.then(function(data) {
 							$scope.country = data;
+
+							// adds the attribute for a full country name into the countrydata
+							$scope.country.current_country = utilities.getCountryNameFromAbbreviation($scope.selectedCountry);
 						});
+
 						selectedCountry = $scope.selectedCountry;
 					}
 				}, true);
