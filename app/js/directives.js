@@ -74,25 +74,25 @@
 						// Star of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "0%")
-							.attr("stop-color", "#0083B9")
+							.attr("stop-color", "hsl(202, 100%, 30%)")
 							.attr("stop-opacity", 1);
 
 						// End of sunset
 						gradient.append("svg:stop")
 							.attr("offset", "8%")
-							.attr("stop-color", "midnightblue")
+							.attr("stop-color", "hsl(202, 100%, 20%)")
 							.attr("stop-opacity", 1);
 
 						// Start of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "42%")
-							.attr("stop-color", "midnightblue")
+							.attr("stop-color", "hsl(202, 100%, 20%)")
 							.attr("stop-opacity", 1);
 
 						// End of sunrise
 						gradient.append("svg:stop")
 							.attr("offset", "50%")
-							.attr("stop-color", "#0083B9")
+							.attr("stop-color", "hsl(202, 100%, 30%)")
 							.attr("stop-opacity", 1);
 
 						return gradient;

@@ -58,6 +58,14 @@
 							defer.reject(message);
 						}).success(function(data) {
 							that.data = data;
+
+							// First-time data collection functions
+							colorService.setMaxValue(data);
+							
+							that.allCountries = data
+								.map(function(item) { return item.country; })
+								.filter(function(value, index, self) { return self.indexOf(value) === index; }); // Only unique
+
 							defer.resolve(data);
 						});
 					}
@@ -70,23 +78,25 @@
 
 					return this.mapDataPromise()
 						.then(function(data) {
-							colorService.setMaxValue(data);
-							return data;
-						})
-						.then(function(data) {
 							return data.filter(function(datum) {
 								return datum.day == that.day && datum.hour == that.hour;
 							});
 						}).then(function(data) {
-							return data.reduce(function(memo, item) {
-								memo[item.country] = {
-									'fillKey': colorService.colorIndex(item.country, item.commits),
-									'numberOfThings': item.commits
+							return that.allCountries.reduce(function(memo, country) {
+								var datum = data.filter(function(d) { return d.country == country; });
+								if(datum.length != 1) { datum = {country: country, commits: 0}; }
+								else { datum = datum[0]; }
+
+								memo[datum.country] = {
+									'fillKey': colorService.colorIndex(datum.country, datum.commits),
+									'numberOfThings': datum.commits
 								};
 								return memo;
 							}, {});
 						});
 				};
+
+				this.allCountries = [];
 
 				// Returns all the data for a particular country.
 				// Data will not be ordered!
