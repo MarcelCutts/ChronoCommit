@@ -10,6 +10,13 @@
 					isUndefinedOrNull: function(val) {
 						return angular.isUndefined(val) || val === null;
 					},
+					dayHourToString: function(dayHour) {
+						var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+						var hour = dayHour % 24;
+						var day = Math.floor(dayHour / 24);
+						var display_hour = hour < 10 ? "0" + hour : hour;
+						return days[day] + ", " + display_hour + ":00 (PDT)";
+					},
 					getCountryNameFromAbbreviation: function(val) {
 
 						var countryLookupTable = {
