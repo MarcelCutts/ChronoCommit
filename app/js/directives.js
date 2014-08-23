@@ -248,128 +248,139 @@
 				};
 			}
 		])
-		.directive('timeSlider', function() {
+		.directive('timeSlider', ['autoplayService', 'utilities',
+			function(autoplayService, utilities) {
 
-			function link(scope, element, attrs) {
-				var margin = {
-						top: 0,
-						right: 10,
-						bottom: 0,
-						left: 10
-					},
-					width = 500 - margin.left - margin.right,
-					height = 40 - margin.bottom - margin.top;
+				function link(scope, element, attrs) {
+					var margin = {
+							top: 0,
+							right: 10,
+							bottom: 0,
+							left: 10
+						},
+						width = 500 - margin.left - margin.right,
+						height = 40 - margin.bottom - margin.top;
 
-				var xMax = 167;
-				var x = d3.scale.linear()
-					.domain([0, xMax])
-					.range([0, width])
-					.clamp(true);
+					var xMax = 167;
+					var x = d3.scale.linear()
+						.domain([0, xMax])
+						.range([0, width])
+						.clamp(true);
 
-				var brush = d3.svg.brush()
-					.x(x)
-					.extent([0, 0])
-					.on("brush", brushed);
+					var brush = d3.svg.brush()
+						.x(x)
+						.extent([0, 0])
+						.on("brush", brushed);
 
-				var svg = d3.select(element[0]).append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					var svg = d3.select(element[0]).append("svg")
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-				svg.append("g")
-					.attr("class", "x axis")
-					.attr("transform", "translate(0," + height / 2 + ")")
-					.call(d3.svg.axis()
-						.scale(x)
-						.orient("bottom")
-						.tickFormat(function(d, i) {
-							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-							return days[i];
+					svg.append("g")
+						.attr("class", "x axis")
+						.attr("transform", "translate(0," + height / 2 + ")")
+						.call(d3.svg.axis()
+							.scale(x)
+							.orient("bottom")
+							.tickFormat(function(d, i) {
+								var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+								return days[i];
+							})
+							.tickValues([0, 24, 48, 72, 96, 120, 144])
+							.tickSize(0)
+							.tickPadding(12))
+						.select(".domain")
+						.select(function() {
+							return this.parentNode.appendChild(this.cloneNode(true));
 						})
-						.tickValues([0, 24, 48, 72, 96, 120, 144])
-						.tickSize(0)
-						.tickPadding(12))
-					.select(".domain")
-					.select(function() {
-						return this.parentNode.appendChild(this.cloneNode(true));
-					})
-					.attr("class", "halo");
+						.attr("class", "halo");
 
-				var slider = svg.append("g")
-					.attr("class", "slider")
-					.call(brush);
+					var slider = svg.append("g")
+						.attr("class", "slider")
+						.call(brush);
 
-				slider.selectAll(".extent,.resize")
-					.remove();
+					slider.selectAll(".extent,.resize")
+						.remove();
 
-				slider.select(".background")
-					.attr("height", height);
+					slider.select(".background")
+						.attr("height", height);
 
-				var handle = slider.append("circle")
-					.attr("class", "handle")
-					.attr("transform", "translate(0," + height / 2 + ")")
-					.attr("r", 9);
+					var handle = slider.append("circle")
+						.attr("class", "handle")
+						.attr("transform", "translate(0," + height / 2 + ")")
+						.attr("r", 9);
 
-				slider
-					.call(brush.event)
-					.transition() // gratuitous intro!
-				.duration(750)
-					.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
-					.call(brush.event);
-
-				// Move the slider to the next value
-				function autonext() {
-					var value = scope.sliderPosition;
-
-					var newValue = value + 1;
-					if (newValue > xMax) {
-						newValue = 0;
-					}
-
-					scope.$apply(function() {
-						scope.sliderPosition = newValue;
-					});
-
-					// Animate slider
 					slider
 						.call(brush.event)
-						.transition()
-						.duration(250)
-						.ease("linear")
+						.transition() // gratuitous intro!
+					.duration(750)
 						.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
 						.call(brush.event);
-				}
 
-				var autonextHook = setInterval(autonext, 250);
+					// Move the slider to the next value
+					function autonext() {
+						var value = scope.sliderPosition;
 
-				function brushed() {
-					var value = brush.extent()[0];
+						var newValue = value + 1;
+						if (newValue > xMax) {
+							newValue = 0;
+						}
 
-					if (d3.event.sourceEvent) { // not a programmatic event
-						// As soon as we get a mouse event, kill autonext()
-						clearInterval(autonextHook);
-
-						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
-							scope.sliderPosition = value;
+							scope.sliderPosition = newValue;
 						});
-						brush.extent([value, value]);
+
+						// Animate slider
+						slider
+							.call(brush.event)
+							.transition()
+							.duration(250)
+							.ease("linear")
+							.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
+							.call(brush.event);
 					}
 
-					handle.attr("cx", x(value));
+					var autonextHook;
+
+					function brushed() {
+						var value = brush.extent()[0];
+
+						if (d3.event.sourceEvent) { // not a programmatic event
+							// As soon as we get a mouse event, kill autonext()
+							autoplayService.setAutoplayState(false);
+
+							value = x.invert(d3.mouse(this)[0]);
+							scope.$apply(function() {
+								scope.sliderPosition = value;
+							});
+							brush.extent([value, value]);
+						}
+
+						handle.attr("cx", x(value));
+					}
+
+					// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
+					autoplayService.registerObserverCallback(function(autoplayState) {
+						if (autoplayState === true) {
+							autonextHook = setInterval(autonext, 250);
+						} else {
+							clearInterval(autonextHook);
+						}
+					});
 				}
+
+				return {
+					restrict: ' E ',
+					scope: {
+						sliderPosition: ' = '
+					},
+					link: link
+				};
+
 			}
-
-			return {
-				restrict: ' E ',
-				scope: {
-					sliderPosition: ' = '
-				},
-				link: link
-			};
-
-		})
+		])
 		.directive('projectOverview', function() {
 			return {
 				restrict: 'E',
@@ -393,6 +404,9 @@
 			function link(scope, element, attrs) {
 
 				var countryData = scope.country;
+
+				// set the country label to be the country that was clicked on
+				// scope.country.current_country = "placeholder";
 
 				// adds the chart
 				nv.addGraph(function() {
