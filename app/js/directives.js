@@ -31,7 +31,7 @@
 					var palette = colorService.getColorPalette(339);
 					palette.defaultFill = palette[0];
 
-					var testMap = new Datamap({
+					var worldMap = new Datamap({
 						element: element[0],
 						fills: palette,
 						projection: 'mercator',
@@ -40,10 +40,16 @@
 						geographyConfig: {
 							popupTemplate: function(geo, data) {
 								var hoverinfo = ['<div class="hoverinfo"><strong>' + geo.properties.name + '</strong><br/>'];
-								if (data === null) { data = { numberOfThings: 0 }; }
+								if (data === null) {
+									data = {
+										numberOfThings: 0
+									};
+								}
 
 								hoverinfo.push(data.numberOfThings + ' commit');
-								if (data.numberOfThings != 1) { hoverinfo.push('s'); } // Pluralicious
+								if (data.numberOfThings != 1) {
+									hoverinfo.push('s');
+								} // Pluralicious
 
 								hoverinfo.push('</div>');
 								return hoverinfo.join('');
@@ -56,7 +62,7 @@
 
 					// Define the linear gradient used for the background in here.
 					function addGradient() {
-						var gradient = testMap.svg.append("defs")
+						var gradient = worldMap.svg.append("defs")
 							.append("linearGradient")
 							.attr("id", "sun")
 							.attr("x1", "0%")
@@ -125,14 +131,14 @@
 						// We draw 8 backgrounds; one for each day of the week, plus one for overlap
 						var width = null;
 						var backgrounds = [];
-						for(var bgId = 0; bgId < 8; bgId++) {
-							var background = testMap.svg.insert("rect", "g")
+						for (var bgId = 0; bgId < 8; bgId++) {
+							var background = worldMap.svg.insert("rect", "g")
 								.attr("class", backgroundClass)
 								.attr("width", "100%")
 								.attr("height", "100%")
 								.attr("fill", "url(#sun)");
 
-							if(width === null) {
+							if (width === null) {
 								width = getWidthOfElementFromD3Selection(background);
 							}
 
@@ -160,7 +166,7 @@
 					}
 
 					function drawDateline() {
-						testMap.svg.insert("line", "g")
+						worldMap.svg.insert("line", "g")
 							.attr("class", "dateline")
 							.attr("x1", "16%")
 							.attr("y1", "0%")
@@ -197,7 +203,7 @@
 					 */
 					scope.$watchCollection('countries', function(newValue, oldValue) {
 						if (!utilities.isUndefinedOrNull(newValue)) {
-							testMap.updateChoropleth(newValue);
+							worldMap.updateChoropleth(newValue);
 						}
 					});
 
@@ -232,138 +238,138 @@
 			}
 		])
 		.directive('timeSlider', ['autoplayService', 'utilities',
-		function(autoplayService, utilities) {
+			function(autoplayService, utilities) {
 
-			function link(scope, element, attrs) {
-				var margin = {
-						top: 0,
-						right: 10,
-						bottom: 0,
-						left: 10
-					},
-					width = 500 - margin.left - margin.right,
-					height = 40 - margin.bottom - margin.top;
+				function link(scope, element, attrs) {
+					var margin = {
+							top: 0,
+							right: 10,
+							bottom: 0,
+							left: 10
+						},
+						width = 500 - margin.left - margin.right,
+						height = 40 - margin.bottom - margin.top;
 
-				var xMax = 167;
-				var x = d3.scale.linear()
-					.domain([0, xMax])
-					.range([0, width])
-					.clamp(true);
+					var xMax = 167;
+					var x = d3.scale.linear()
+						.domain([0, xMax])
+						.range([0, width])
+						.clamp(true);
 
-				var brush = d3.svg.brush()
-					.x(x)
-					.extent([0, 0])
-					.on("brush", brushed);
+					var brush = d3.svg.brush()
+						.x(x)
+						.extent([0, 0])
+						.on("brush", brushed);
 
-				var svg = d3.select(element[0]).append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					var svg = d3.select(element[0]).append("svg")
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-				svg.append("g")
-					.attr("class", "x axis")
-					.attr("transform", "translate(0," + height / 2 + ")")
-					.call(d3.svg.axis()
-						.scale(x)
-						.orient("bottom")
-						.tickFormat(function(d, i) {
-							var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-							return days[i];
+					svg.append("g")
+						.attr("class", "x axis")
+						.attr("transform", "translate(0," + height / 2 + ")")
+						.call(d3.svg.axis()
+							.scale(x)
+							.orient("bottom")
+							.tickFormat(function(d, i) {
+								var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+								return days[i];
+							})
+							.tickValues([0, 24, 48, 72, 96, 120, 144])
+							.tickSize(0)
+							.tickPadding(12))
+						.select(".domain")
+						.select(function() {
+							return this.parentNode.appendChild(this.cloneNode(true));
 						})
-						.tickValues([0, 24, 48, 72, 96, 120, 144])
-						.tickSize(0)
-						.tickPadding(12))
-					.select(".domain")
-					.select(function() {
-						return this.parentNode.appendChild(this.cloneNode(true));
-					})
-					.attr("class", "halo");
+						.attr("class", "halo");
 
-				var slider = svg.append("g")
-					.attr("class", "slider")
-					.call(brush);
+					var slider = svg.append("g")
+						.attr("class", "slider")
+						.call(brush);
 
-				slider.selectAll(".extent,.resize")
-					.remove();
+					slider.selectAll(".extent,.resize")
+						.remove();
 
-				slider.select(".background")
-					.attr("height", height);
+					slider.select(".background")
+						.attr("height", height);
 
-				var handle = slider.append("circle")
-					.attr("class", "handle")
-					.attr("transform", "translate(0," + height / 2 + ")")
-					.attr("r", 9);
+					var handle = slider.append("circle")
+						.attr("class", "handle")
+						.attr("transform", "translate(0," + height / 2 + ")")
+						.attr("r", 9);
 
-				slider
-					.call(brush.event)
-					.transition() // gratuitous intro!
-				.duration(750)
-					.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
-					.call(brush.event);
-
-				// Move the slider to the next value
-				function autonext() {
-					var value = scope.sliderPosition;
-
-					var newValue = value + 1;
-					if (newValue > xMax) {
-						newValue = 0;
-					}
-
-					scope.$apply(function() {
-						scope.sliderPosition = newValue;
-					});
-
-					// Animate slider
 					slider
 						.call(brush.event)
-						.transition()
-						.duration(250)
-						.ease("linear")
+						.transition() // gratuitous intro!
+					.duration(750)
 						.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
 						.call(brush.event);
-				}
 
-				var autonextHook;
+					// Move the slider to the next value
+					function autonext() {
+						var value = scope.sliderPosition;
 
-				function brushed() {
-					var value = brush.extent()[0];
+						var newValue = value + 1;
+						if (newValue > xMax) {
+							newValue = 0;
+						}
 
-					if (d3.event.sourceEvent) { // not a programmatic event
-						// As soon as we get a mouse event, kill autonext()
-						autoplayService.setAutoplayState(false);
-
-						value = x.invert(d3.mouse(this)[0]);
 						scope.$apply(function() {
-							scope.sliderPosition = value;
+							scope.sliderPosition = newValue;
 						});
-						brush.extent([value, value]);
+
+						// Animate slider
+						slider
+							.call(brush.event)
+							.transition()
+							.duration(250)
+							.ease("linear")
+							.call(brush.extent([scope.sliderPosition, scope.sliderPosition]))
+							.call(brush.event);
 					}
 
-					handle.attr("cx", x(value));
+					var autonextHook;
+
+					function brushed() {
+						var value = brush.extent()[0];
+
+						if (d3.event.sourceEvent) { // not a programmatic event
+							// As soon as we get a mouse event, kill autonext()
+							autoplayService.setAutoplayState(false);
+
+							value = x.invert(d3.mouse(this)[0]);
+							scope.$apply(function() {
+								scope.sliderPosition = value;
+							});
+							brush.extent([value, value]);
+						}
+
+						handle.attr("cx", x(value));
+					}
+
+					// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
+					autoplayService.registerObserverCallback(function(autoplayState) {
+						if (autoplayState === true) {
+							autonextHook = setInterval(autonext, 250);
+						} else {
+							clearInterval(autonextHook);
+						}
+					});
 				}
 
-				// Watch the autoplay value. If this changes, toggle autoplay as the value dictates.
-				autoplayService.registerObserverCallback(function(autoplayState){
-					if (autoplayState === true){
-						autonextHook = setInterval(autonext, 250);
-					}
-					else {
-						clearInterval(autonextHook);
-					}
-				});
+				return {
+					restrict: ' E ',
+					scope: {
+						sliderPosition: ' = '
+					},
+					link: link
+				};
+
 			}
-
-			return {
-				restrict: ' E ',
-				scope: {
-					sliderPosition: ' = '
-				},
-				link: link
-			};
-
-		}])
+		])
 		.directive('projectOverview', function() {
 			return {
 				restrict: 'E',
