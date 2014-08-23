@@ -29,7 +29,7 @@
 				$scope.$watch('selectedCountry', function(newValue, oldValue) {
 					if (newValue) {
 						ngDialog.open({
-							template: 'js/countryPopup.html',
+							template: 'partials/countryPopup.html',
 							className: 'ngdialog-theme-default',
 							closeByEscape: true,
 							closeByDocument: true,
