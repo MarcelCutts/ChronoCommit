@@ -10,19 +10,26 @@ This visualisation was created as part of the [Third Annual GitHub Data Challeng
 
 ## Getting Up And Running
 
-Run the following commands:
+Clone the repository and run the following commands:
+
+```
+npm install
+npm start
+```
+
+You should then have a service on `http://localhost:8000/app/index.html`
+
+## Processing the data
+
+The quick-start instructions above use a generated JSON file for its data. To generate this data you'll need to use the Python processing backend:
 
 ```
 mkdir data
 cd data
 wget http://data.githubarchive.org/2014-07-{01..08}-{0..23}.json.gz
 cd ..
-npm install
 python setup.py
-npm start
 ```
-
-You should then have a service on `http://localhost:8000/app/index.html`
 
 ## Updating the project page
 A version of the visualisation lives on the ChronoCommit project page at `http://asgardenterprises.github.io/ChronoCommit/)`; this mirrors the content of the gh-pages branch.
