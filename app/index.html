@@ -18,7 +18,6 @@
   <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
   <script src="bower_components/d3/d3.js"></script>
   <script src="bower_components/topojson/topojson.js"></script>
-  <script src="bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
   <script src="homebrew-datamaps/datamaps.world.js"></script>
 </head>
 <body>
@@ -29,6 +28,7 @@
     </div>
 
     <div id='controls' class='panel' ng-controller="sliderCtrl">
+      <img ng-src="{{sliderIconPath}}" ng-click="toggleAutoplay()" class="play-pause-icon" />
       <div class="date-text">{{sliderTimeDescription}}</div>
       <time-slider slider-position="sliderPosition"></time-slider>
     </div>

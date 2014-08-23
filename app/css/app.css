@@ -174,3 +174,9 @@ a:hover {
   top: 20%;
   right: 1%;
 }
+
+.play-pause-icon {
+  position: absolute;
+  top: 13%;
+  left: 3%;
+}

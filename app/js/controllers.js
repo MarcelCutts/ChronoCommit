@@ -57,11 +57,28 @@
 				});
 			}
 		])
-		.controller('sliderCtrl', ['$scope', 'timeDataService', 'utilities',
-			function($scope, timeDataService, utilities) {
+		.controller('sliderCtrl', ['$scope', 'timeDataService', 'autoplayService', 'utilities',
+			function($scope, timeDataService, autoplayService, utilities) {
 				// Controls the slider.
 
-				$scope.sliderPosition = 0; // Starting position
+				$scope.sliderPosition = 0; // Starting position.
+
+				$scope.toggleAutoplay = function(){
+					autoplayService.toggleAutoplay();
+				};
+
+				// Register this method with the autoplay service so it will update as required.
+				autoplayService.registerObserverCallback(function(autoplayState){
+					if (autoplayState === true){
+						$scope.sliderIconPath = "img/pause.png";
+					}
+					else {
+						$scope.sliderIconPath = "img/play.png";
+					}
+				});
+
+				// Start the autoplay to begin with.
+				autoplayService.setAutoplayState(true);
 
 				// When the slider position changes, update the date and time description.
 				$scope.$watch('sliderPosition', function(newValue, oldValue) {
@@ -77,12 +94,17 @@
 			// The view is available in project-overview.html
 
 			function($scope) {
+
+				// Set of states for the overview's top right control
 				$scope.visible = true;
 				var minimizeIconPath = 'img/minimize.png';
 				var minimizeIconCssClass = "minimize-icon";
 				var maximizeIconPath = 'img/maximize.png';
 				var maximiseIconCssClass = "maximise-icon";
 
+				// Set of current states and the function
+				// that toggles the states between the minimised
+				// and maximised overview control
 				$scope.iconPath = minimizeIconPath;
 				$scope.iconCss = minimizeIconCssClass;
 				$scope.toggleDescriptionVisibility = function() {
