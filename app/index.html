@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog.css">
+  <link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-default.css">
+  <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css">
   <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
   <script src="bower_components/d3/d3.js"></script>
   <script src="bower_components/topojson/topojson.js"></script>
@@ -21,7 +24,7 @@
 
   <div id='splash'>
     <div ng-controller="dataMapsCtrl" id="map-container">
-      <world-map countries="countriesData" current-hour="currentHour"></world-map>
+      <world-map countries="countriesData" current-hour="currentHour" country-clicked="selectedCountry"></world-map>
     </div>
 
     <div id='controls' class='panel' ng-controller="sliderCtrl">
@@ -43,7 +46,9 @@
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
   <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/ngDialog/js/ngDialog.min.js"></script>
   <script src="bower_components/angular-scroll/angular-scroll.js"></script>
+  <script src="bower_components/nvd3/nv.d3.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/services.js"></script>
   <script src="js/controllers.js"></script>

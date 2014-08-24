@@ -7,6 +7,7 @@
 		'chronoCommit.services',
 		'chronoCommit.directives',
 		'chronoCommit.controllers',
+		'ngDialog',
 		'genericJsUtilities',
 		'duScroll'
 	]).value('duScrollEasing', function(t) {

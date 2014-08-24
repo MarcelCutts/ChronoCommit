@@ -1,11 +1,10 @@
 (function() {
 	'use strict';
 	/* Controllers */
-	angular.module('chronoCommit.controllers', [])
-		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities',
-			// Controls the world map.
 
-			function($scope, timeDataService, utilities) {
+	angular.module('chronoCommit.controllers', [])
+		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities', 'ngDialog',
+			function($scope, timeDataService, utilities, ngDialog) {
 				// Watching service values, but may replace with broadcast
 				// and catching that emission with $scope.$on. We'll see.
 				//
@@ -15,13 +14,47 @@
 				}, function(newVal, oldVal) {
 					if (!utilities.isUndefinedOrNull(newVal)) {
 						$scope.currentHour = newVal;
-
 						var countriesPromise = timeDataService.getMapData();
 						var countriesData = countriesPromise.then(function(data) {
 							$scope.countriesData = data;
 						});
 					}
 				}, true);
+
+				// when a country is clicked, the clickevent will update selectedCountry
+				// with the ID of the currently selected country
+				// use this ID to launch popup with appropriate country data
+				$scope.selectedCountry = '';
+				var selectedCountry = '';
+				$scope.$watch('selectedCountry', function(newValue, oldValue) {
+					if (newValue) {
+						ngDialog.open({
+							template: 'partials/countryPopup.html',
+							className: 'ngdialog-theme-default',
+							closeByEscape: true,
+							closeByDocument: true,
+							controller: 'dataMapsCtrl',
+							scope: $scope
+						});
+
+						// gets the actual commit data for the country
+						var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
+						countryPromise.then(function(data) {
+							$scope.country = data;
+
+							// adds the attribute for a full country name into the countrydata
+							$scope.country.current_country = utilities.getCountryNameFromAbbreviation($scope.selectedCountry);
+						});
+
+						selectedCountry = $scope.selectedCountry;
+					}
+				}, true);
+
+				// reset the selected country to an empty string when the dialog is closed
+				// unless you do this, the popup will not get triggered when you click on the same country twice
+				$scope.$on('ngDialog.closed', function(e, $dialog) {
+					$scope.selectedCountry = '';
+				});
 			}
 		])
 		.controller('sliderCtrl', ['$scope', 'timeDataService', 'autoplayService', 'utilities',

@@ -55,6 +55,16 @@
 								return hoverinfo.join('');
 
 							}
+						},
+						// handles what happens when you click on a country
+						done: function(datamap) {
+							var svg = datamap.svg;
+							svg.selectAll('.datamaps-subunit').on('click', function(d) {
+								var countryId = d.id;
+								scope.$apply(function() {
+									scope.countryClicked = countryId;
+								});
+							})
 						}
 					});
 
@@ -231,6 +241,7 @@
 					restrict: ' E ',
 					scope: {
 						countries: ' = ',
+						countryClicked: ' = ',
 						currentHour: ' = '
 					},
 					link: link
@@ -381,5 +392,148 @@
 				restrict: 'E',
 				templateUrl: 'partials/project-description.html'
 			};
-		});
+		})
+		.directive('javascriptInits', function() {
+			return {
+				restrict: 'E',
+				templateUrl: 'partials/javascript-inits.html'
+			};
+		})
+		.directive('countryGraph', ['utilities',
+			function(utilities) {
+
+				function link(scope, element, attrs) {
+
+					var countryData = scope.country;
+
+					// set the country label to be the country that was clicked on
+					// scope.country.current_country = "placeholder";
+
+					// adds the chart
+					nv.addGraph(function() {
+						var chart = nv.models.lineChart()
+							.margin({
+								left: 100,
+								right: 100,
+								top: 30,
+								bottom: 150
+							})
+							.transitionDuration(350)
+							.showLegend(false)
+							.showYAxis(true)
+							.showXAxis(true)
+							.tooltips(true)
+							.tooltipContent(function(key, x, y, e, graph) {
+								return '<p>' + e.point.y + ' commits for ' + utilities.dayHourToString(e.point.x) + '</p>';
+							});
+
+						chart.xAxis
+							.axisLabel('Day/hour (PDT)')
+							.tickFormat(function(d, i) {
+								var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+								return days[i];
+							})
+							.tickValues([1, 25, 49, 73, 97, 121, 145]);
+
+						chart.yAxis
+							.axisLabel('Commits')
+							.tickFormat(d3.format('d'));
+
+						var myData = getCountryData(countryData);
+
+						var svg = d3.select(element[0]).append("svg")
+							.attr("width", "90%")
+							.attr("height", "70%")
+							.attr("id", "countrySvg")
+							.datum(myData)
+							.call(chart);
+
+						// Update the chart when window resizes.
+						nv.utils.windowResize(function() {
+							chart.update();
+						});
+						return chart;
+					});
+
+					// gets the dataset for nvd3
+					function getCountryData(countryData) {
+						var countryCommitArray = getCountryCommitArray(countryData);
+						return [{
+							values: countryCommitArray,
+							key: 'Commits per hour',
+							color: '#2ca02c'
+						}];
+					}
+
+					// gets the array for a country in the appropriate format
+					function getCountryCommitArray(countryData) {
+
+						var unsortedArray = subMissingDaysAsZeroCommits(countryData);
+						var sortedArray = getSortedCountryData(unsortedArray);
+						var countryCommitArray = [];
+
+						for (var i = 0; i < sortedArray.length; i++) {
+							countryCommitArray.push({
+								x: i + 1,
+								y: sortedArray[i].commits
+							});
+						}
+						return countryCommitArray;
+					}
+
+					// adds in the hours where there was no commit data as having zero commits that hour
+					function subMissingDaysAsZeroCommits(countryData) {
+
+						// if there is no data, don't bother doing anything
+						if (countryData.length > 0) {
+
+							var exists = false;
+							var country = countryData[0].country;
+
+							for (var day = 0; day < 7; day++) {
+								for (var hour = 0; hour < 24; hour++) {
+									for (var index = 0; index < countryData.length; index++) {
+										if (countryData[index].day == day && countryData[index].hour == hour) {
+											exists = true;
+										}
+									}
+									if (!exists) {
+										countryData.push({
+											country: country,
+											day: day,
+											hour: hour,
+											commits: 0
+										});
+									}
+									exists = false;
+								}
+							}
+						}
+						return countryData;
+					}
+
+					// sorts the countryData to be in chronological order
+					function getSortedCountryData(unsortedArray) {
+						return unsortedArray.sort(function(a, b) {
+							if (a.day < b.day)
+								return -1;
+							else if (a.day > b.day)
+								return 1;
+							else if (a.hour < b.hour)
+								return -1;
+							else
+								return 1;
+						});
+					}
+				}
+
+				return {
+					restrict: ' E ',
+					scope: {
+						country: ' = '
+					},
+					link: link
+				};
+			}
+		]);
 })();

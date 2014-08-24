@@ -82,12 +82,29 @@ a:hover {
   stroke-linecap: round;
 }
 
+.axis text{
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+}
+
 .slider .handle {
   fill: #fff;
   stroke: #000;
   stroke-opacity: .5;
   stroke-width: 1.25px;
   pointer-events: none;
+}
+
+.ngdialog-theme-default .ngdialog-content{
+  width: 80% !important;
+  height: 80% !important;
+}
+
+.popup-container{
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .dateline {
@@ -113,6 +130,7 @@ a:hover {
   border: 1px solid rgb(220, 220, 220);
   box-shadow: 0 5px 10px 1px rgba(0, 0, 0, 0.5);
   padding: 10px;
+  width: 500px;
 }
 
 #title {
@@ -161,4 +179,10 @@ a:hover {
   position: absolute;
   top: 13%;
   left: 3%;
+}
+
+/*Minor override of NVD3 tooltip CSS*/
+.nvtooltip {
+    margin-top: 9%;
+    margin-left: 18%;
 }
