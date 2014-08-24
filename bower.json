@@ -13,7 +13,6 @@
     "d3": "~3.4.11",
     "topojson": "~1.6.15",
     "datamaps": "~0.3.3",
-    "smooth-scroll": "https://github.com/cferdinandi/smooth-scroll.git",
     "ngDialog": "~0.2.6",
     "angular-scroll": "~0.6.1",
     "nvd3": "~1.1.15-beta"
