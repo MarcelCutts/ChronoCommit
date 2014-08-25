@@ -3,8 +3,8 @@
 	/* Controllers */
 
 	angular.module('chronoCommit.controllers', [])
-		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities', 'ngDialog',
-			function($scope, timeDataService, utilities, ngDialog) {
+		.controller('dataMapsCtrl', ['$scope', 'timeDataService', 'utilities', 'ngDialog', 'dataPackagingService',
+			function($scope, timeDataService, utilities, ngDialog, dataPackagingService) {
 				// Watching service values, but may replace with broadcast
 				// and catching that emission with $scope.$on. We'll see.
 				//
@@ -38,12 +38,12 @@
 						});
 
 						// gets the actual commit data for the country
-						var countryPromise = timeDataService.getCountryData($scope.selectedCountry);
-						countryPromise.then(function(data) {
-							$scope.country = data;
+						var formattedCountryDataPromise = dataPackagingService.packageCountryDataForNvd3LineGraph($scope.selectedCountry);
+						formattedCountryDataPromise.then(function(data) {
+							$scope.nvd3CompatibleCountryData = data;
 
 							// adds the attribute for a full country name into the countrydata
-							$scope.country.current_country = utilities.getCountryNameFromAbbreviation($scope.selectedCountry);
+							$scope.nvd3CompatibleCountryData.currentCountry = utilities.getCountryNameFromAbbreviation($scope.selectedCountry);
 						});
 
 						selectedCountry = $scope.selectedCountry;
@@ -63,16 +63,15 @@
 
 				$scope.sliderPosition = 0; // Starting position.
 
-				$scope.toggleAutoplay = function(){
+				$scope.toggleAutoplay = function() {
 					autoplayService.toggleAutoplay();
 				};
 
 				// Register this method with the autoplay service so it will update as required.
-				autoplayService.registerObserverCallback(function(autoplayState){
-					if (autoplayState === true){
+				autoplayService.registerObserverCallback(function(autoplayState) {
+					if (autoplayState === true) {
 						$scope.sliderIconPath = "img/pause.png";
-					}
-					else {
+					} else {
 						$scope.sliderIconPath = "img/play.png";
 					}
 				});

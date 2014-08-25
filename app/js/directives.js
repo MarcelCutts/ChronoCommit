@@ -248,8 +248,8 @@
 				};
 			}
 		])
-		.directive('timeSlider', ['autoplayService', 'utilities',
-			function(autoplayService, utilities) {
+		.directive('timeSlider', ['autoplayService', 'utilities', 'dataPackagingService',
+			function(autoplayService, utilities, dataPackagingService) {
 
 				function link(scope, element, attrs) {
 					var margin = {
@@ -404,10 +404,7 @@
 
 				function link(scope, element, attrs) {
 
-					var countryData = scope.country;
-
-					// set the country label to be the country that was clicked on
-					// scope.country.current_country = "placeholder";
+					var countryData = scope.nvd3CompatibleCountryData;
 
 					// adds the chart
 					nv.addGraph(function() {
@@ -429,11 +426,10 @@
 
 						chart.xAxis
 							.axisLabel('Day/hour (PDT)')
-							.tickFormat(function(d, i) {
-								var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-								return days[i];
-							})
-							.tickValues([1, 25, 49, 73, 97, 121, 145]);
+							.tickFormat(function(d) {
+								// Will Return the date, as "%m/%d/%Y"(08/06/13)
+								return d3.time.format('%A')(new Date(d))
+							});
 
 						chart.yAxis
 							.axisLabel('Commits')
@@ -457,80 +453,18 @@
 
 					// gets the dataset for nvd3
 					function getCountryData(countryData) {
-						var countryCommitArray = getCountryCommitArray(countryData);
 						return [{
-							values: countryCommitArray,
+							values: countryData,
 							key: 'Commits per hour',
 							color: '#2ca02c'
 						}];
-					}
-
-					// gets the array for a country in the appropriate format
-					function getCountryCommitArray(countryData) {
-
-						var unsortedArray = subMissingDaysAsZeroCommits(countryData);
-						var sortedArray = getSortedCountryData(unsortedArray);
-						var countryCommitArray = [];
-
-						for (var i = 0; i < sortedArray.length; i++) {
-							countryCommitArray.push({
-								x: i + 1,
-								y: sortedArray[i].commits
-							});
-						}
-						return countryCommitArray;
-					}
-
-					// adds in the hours where there was no commit data as having zero commits that hour
-					function subMissingDaysAsZeroCommits(countryData) {
-
-						// if there is no data, don't bother doing anything
-						if (countryData.length > 0) {
-
-							var exists = false;
-							var country = countryData[0].country;
-
-							for (var day = 0; day < 7; day++) {
-								for (var hour = 0; hour < 24; hour++) {
-									for (var index = 0; index < countryData.length; index++) {
-										if (countryData[index].day == day && countryData[index].hour == hour) {
-											exists = true;
-										}
-									}
-									if (!exists) {
-										countryData.push({
-											country: country,
-											day: day,
-											hour: hour,
-											commits: 0
-										});
-									}
-									exists = false;
-								}
-							}
-						}
-						return countryData;
-					}
-
-					// sorts the countryData to be in chronological order
-					function getSortedCountryData(unsortedArray) {
-						return unsortedArray.sort(function(a, b) {
-							if (a.day < b.day)
-								return -1;
-							else if (a.day > b.day)
-								return 1;
-							else if (a.hour < b.hour)
-								return -1;
-							else
-								return 1;
-						});
 					}
 				}
 
 				return {
 					restrict: ' E ',
 					scope: {
-						country: ' = '
+						nvd3CompatibleCountryData: ' = '
 					},
 					link: link
 				};
