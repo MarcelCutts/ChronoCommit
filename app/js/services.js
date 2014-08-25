@@ -6,22 +6,23 @@
 	angular.module('chronoCommit.services', [])
 		.service('timeDataService', ['$http', '$q', 'colorService', 'utilities',
 			function($http, $q, colorService, utilities) {
-				this.day = 2;
-				this.hour = 17;
+				// Some sensible data defaults for internal service state
+				this.day = null;
+				this.hour = null;
+				this.hoursInAWeek = 168;
+				this.hoursInAWeekArray = _.range(this.hoursInAWeek);
+				this.data = null;
 
 				// Returns the number of hours since Sunday at 00:00.
 				this.dayHour = function() {
 					return this.hour + this.day * 24;
 				};
 
-				this.sliderScaleMax = 168;
-
-				this.data = null;
-
+				// Updates internal variables from slider value
 				this.updateDayAndHour = function(sliderValue) {
 
 					// length of the scale we are mapping from
-					var scaleLength = this.sliderScaleMax;
+					var scaleLength = this.hoursInAWeek;
 
 					// length of each day
 					var dayLength = scaleLength / 7;
@@ -37,6 +38,7 @@
 					this.hour = Math.floor(dayReminder / hourLength);
 				};
 
+				// Creates a human readable string from time
 				this.getTimeDescription = function() {
 					return utilities.dayHourToString(this.dayHour());
 				};
@@ -59,10 +61,14 @@
 
 							// First-time data collection functions
 							colorService.setMaxValue(data);
-							
+
 							that.allCountries = data
-								.map(function(item) { return item.country; })
-								.filter(function(value, index, self) { return self.indexOf(value) === index; }); // Only unique
+								.map(function(item) {
+									return item.country;
+								})
+								.filter(function(value, index, self) {
+									return self.indexOf(value) === index;
+								}); // Only unique
 
 							defer.resolve(data);
 						});
@@ -81,9 +87,17 @@
 							});
 						}).then(function(data) {
 							return that.allCountries.reduce(function(memo, country) {
-								var datum = data.filter(function(d) { return d.country == country; });
-								if(datum.length != 1) { datum = {country: country, commits: 0}; }
-								else { datum = datum[0]; }
+								var datum = data.filter(function(d) {
+									return d.country == country;
+								});
+								if (datum.length != 1) {
+									datum = {
+										country: country,
+										commits: 0
+									};
+								} else {
+									datum = datum[0];
+								}
 
 								memo[datum.country] = {
 									'fillKey': colorService.colorIndex(datum.country, datum.commits),
@@ -137,13 +151,13 @@
 				return index < 0 ? 0 : index;
 			};
 		})
-		.service('autoplayService', function(){
+		.service('autoplayService', function() {
 			// Set this to false as a default.
 			var autoplayState = false;
 			var observerCallbacks = [];
 
 			// Register an observer callback
-			this.registerObserverCallback = function(callback){
+			this.registerObserverCallback = function(callback) {
 				observerCallbacks.push(callback);
 
 				// Execute the callback - if it is registered after a state change on initialisation,
@@ -153,26 +167,57 @@
 			};
 
 			// Called when autoplay state updated
-			var notifyObservers = function(){
-				angular.forEach(observerCallbacks, function(callback){
+			var notifyObservers = function() {
+				angular.forEach(observerCallbacks, function(callback) {
 					callback(autoplayState);
 				});
 			};
 
-			this.setAutoplayState = function (state) {
+			this.setAutoplayState = function(state) {
 				autoplayState = state;
 				notifyObservers();
 			};
 
-			this.toggleAutoplay = function () {
+			this.toggleAutoplay = function() {
 				if (autoplayState === true) {
 					autoplayState = false;
-				}
-				else {
+				} else {
 					autoplayState = true;
 				}
 
 				notifyObservers();
 			};
-		});
+		})
+		.service('dataPackagingService', ['timeDataService',
+			function(timeDataService) {
+
+				/**
+				 * Packages country data into a format that is parsable
+				 * for the NVD3 library's pre-made line graph
+				 * @param  {string} countryCode - 3 letter country ID
+				 * @return Promise of packaged data
+				 */
+				this.packageCountryDataForNvd3LineGraph = function(countryCode) {
+					return timeDataService.getCountryData(countryCode).then(function(countryData) {
+						var weekHours = timeDataService.hoursInAWeekArray.map(function(hourNumber) {
+							return moment().startOf('week').add(hourNumber, 'hours').toDate();
+						});
+
+						return weekHours.map(function(commitDate) {
+							var commitsAtTime = _.findWhere(countryData, {
+								day: commitDate.getDay(),
+								hour: commitDate.getHours()
+							});
+
+							var commitsQuantity = (typeof(commitsAtTime) !== 'undefined') ? commitsAtTime.commits : 0;
+
+							return {
+								x: commitDate,
+								y: commitsQuantity
+							};
+						});
+					});
+				};
+			}
+		]);
 })();
