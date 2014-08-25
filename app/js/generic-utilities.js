@@ -18,7 +18,7 @@
 						return days[day] + ", " + display_hour + ":00 (PDT)";
 					},
 					getCountryNameFromAbbreviation: function(val) {
-
+						// TODO: Talk to krak about packaging this properly
 						var countryLookupTable = {
 							"AFG": function() {
 								return "Afghanistan";
